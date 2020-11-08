@@ -16,6 +16,7 @@ int main(int argc, char* argv[]) {
     std::vector<char> buf(static_cast<std::size_t>(pos));
     in.read(buf.data(), static_cast<long>(buf.size()));
     assert(in.gcount() == pos);
-    LLVMFuzzerTestOneInput(reinterpret_cast<const uint8_t*>(buf.data()), buf.size());
+    LLVMFuzzerTestOneInput(reinterpret_cast<const uint8_t*>(buf.data()),
+                           buf.size());
   }
 }
