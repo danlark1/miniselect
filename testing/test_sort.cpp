@@ -119,7 +119,6 @@ TYPED_TEST(PartialSortTest, TestEmptySmall) {
   EXPECT_THAT(v, Eq(std::vector<std::string>{"", ""}));
 }
 
-
 TYPED_TEST(PartialSortTest, TestBasic) { TestFixture::TestManySorts(); }
 
 TYPED_TEST(PartialSortTest, TestComparators) {
