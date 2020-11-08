@@ -29,6 +29,8 @@ if(ENABLE_FUZZING)
 
   implement_fuzzer(fuzz_select)
   implement_fuzzer(fuzz_string_select)
+  implement_fuzzer(fuzz_sort)
+  implement_fuzzer(fuzz_string_sort)
 
   # to be able to get a list of all fuzzers from within a script
   add_custom_target(print_all_fuzzernames
