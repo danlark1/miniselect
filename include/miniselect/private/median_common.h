@@ -43,6 +43,7 @@ Sorts in place r[a], r[b], and r[c].
 */
 template <class Iter, class Compare>
 void sort3(Iter r, size_t a, size_t b, size_t c, Compare comp) {
+  typedef typename std::iterator_traits<Iter>::value_type T;
   if (comp(r[b], r[a]))  // b < a
   {
     if (comp(r[c], r[b]))  // c < b < a
@@ -50,7 +51,7 @@ void sort3(Iter r, size_t a, size_t b, size_t c, Compare comp) {
       std::swap(r[a], r[c]);  // a < b < c
     } else                    // b < a, b <= c
     {
-      auto t = std::move(r[a]);
+      T t = std::move(r[a]);
       r[a] = std::move(r[b]);
       if (comp(r[c], t))  // b <= c < a
       {
@@ -63,7 +64,7 @@ void sort3(Iter r, size_t a, size_t b, size_t c, Compare comp) {
     }
   } else if (comp(r[c], r[b]))  // a <= b, c < b
   {
-    auto t = std::move(r[c]);
+    T t = std::move(r[c]);
     r[c] = std::move(r[b]);
     if (comp(t, r[a]))  // c < a < b
     {

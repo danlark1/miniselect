@@ -38,11 +38,11 @@ inline void floyd_rivest_select_loop(Iter begin, Diff left, Diff right, Diff k,
     Diff j = right;
     std::swap(begin[left], begin[k]);
     const bool to_swap = comp(begin[left], begin[right]);
-    // Make sure that non copyable types compile.
-    auto t = std::move(begin[left]);
     if (to_swap) {
       std::swap(begin[left], begin[right]);
     }
+    // Make sure that non copyable types compile.
+    const auto& t = to_swap ? begin[left] : begin[right];
     while (i < j) {
       std::swap(begin[i], begin[j]);
       i++;
@@ -61,8 +61,6 @@ inline void floyd_rivest_select_loop(Iter begin, Diff left, Diff right, Diff k,
       j++;
       std::swap(begin[right], begin[j]);
     }
-    // Moving back the temporary.
-    begin[j] = std::move(t);
 
     if (j <= k) {
       left = j + 1;

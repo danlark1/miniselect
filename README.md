@@ -108,7 +108,7 @@ For sorting the situation is similar except every line adds ![\large O(k\log k)]
 ## API
 
 All functions end either in `select`, either in `partial_sort` and
-their behaviour is exactly the same as for
+their behavior is exactly the same as for
 [`std::nth_element`](https://en.cppreference.com/w/cpp/algorithm/nth_element)
 and [`std::partial_sort`](https://en.cppreference.com/w/cpp/algorithm/partial_sort)
 respectively, i.e. they accept 3 arguments as `first`, `middle`, `end` iterators
@@ -118,7 +118,7 @@ and an optional comparator. Several notes:
 calls, we assume that you don't store anything heavy there and we are free to
 pass `Compare` by value.
 * You should not throw exceptions from `Compare` function. Standard library
-also does not specify the behaviour in that matter.
+also does not specify the behavior in that matter.
 * We don't support ParallelSTL for now.
 * C++20 constexpr specifiers might be added but currently we don't have them
 because of some floating point math in several algorithms.
@@ -135,7 +135,7 @@ because of some floating point math in several algorithms.
   - **Location:** [`miniselect/floyd_rivest_select.h`](./include/miniselect/floyd_rivest_select.h).
   - **Functions:** `floyd_rivest_select`, `floyd_rivest_partial_sort`.
   - **Performance advice:** Given that this algorithm performs as one of the best on average case in terms of comparisons and speed, we highly advise to
-  at least try this in your project. Especially it is good for small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) or types that are expensive to compare (for example, strings). But even for median the benchmarks show it outperforms others. It is not easy for this algorithm to build a reasonable worst case but one of examples when this algorithm does not perform well is when there are lots of similar values of linear size (random10 dataset showed some moderate penalties).
+  at least try this in your project. Especially it is good for small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) or types that are expensive to compare (for example, strings). But even for median the benchmarks show it outperforms others. It is not easy for this algorithm to build a reasonable worst case but one of examples when this algorithm does not perform well is when there are lots of similar values of linear size (random01 dataset showed some moderate penalties).
 
 - MedianOfMedians
   - This algorithm is based on [Median of Medians](https://en.wikipedia.org/wiki/Median_of_medians) algorithm, one of the first deterministic linear time worst case median algorithm
@@ -182,7 +182,7 @@ Real-world usage
 - [Yandex ClickHouse](https://github.com/yandex/ClickHouse)
 
 If you are planning to use miniselect in your product, please work from one of
-our releases and if you wish, you can write the acknowledgement in this section
+our releases and if you wish, you can write the acknowledgment in this section
 for visibility.
 
 Contributing
@@ -203,12 +203,13 @@ compare different approaches from standard library and quickselect algorithms.
 After that it turned out that the problem is much more interesting than it looks
 like and after reading The Art of Computer Programming from Donald Knuth about
 minimum comparison sorting and selection algorithms the author decided to look
-through all nonpopular algorithms and try them out.
+through all non-popular algorithms and try them out.
 
 The author have not found any decent library for selection algorithms and little
 research is published in open source, so that they decided to merge all that
 implementations and compare them with possible merging of different ideas
-into a decent one algorithm for most needs.
+into a decent one algorithm for most needs. For a big story of adventures see
+the author's blog post TODO.
 
 License
 -------
