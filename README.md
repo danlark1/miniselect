@@ -9,8 +9,10 @@ benchmarking.
 
 Sorting is everywhere and there are many outstanding sorting algorithms that
 compete in speed, comparison count and cache friendliness. However selection
-algorithms are always a bit outside of the competition scope and this library
-solves this problem with Modern C++.
+algorithms are always a bit outside of the competition scope, however they are
+pretty important, for example, in databases ORDER BY LIMIT N is used extremely
+often which can benefit from more optimal selection and partial sorting
+algorithms. This library tries to solve this problem with Modern C++.
 
 * **Easy:** First-class, easy to use dependency and carefully documented APIs and algorithm properties.
 * **Fast:** We do care about speed of the algorithms and provide reasonable implementations.
@@ -85,24 +87,91 @@ Documentation
 -------------
 
 There are several selection algorithms available, further ![\large n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n) is the number
-of elements in the array, ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) is the selection element that is needed to be found:
+of elements in the array, ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) is the selection element that is needed to be found (all algorithms are deterministic and not stable unless otherwise is specified):
 
 
 | Name                      | Average                                                                                                   | Best Case                                                                                                 | Worst Case                                                                                                                | Comparisons                                                                                                                                                                                                                                                                                                                               | Memory                                                                                                                            |
 |-------------------------  |---------------------------------------------------------------------------------------------------------  |---------------------------------------------------------------------------------------------------------  |-----------------------------------------------------------------------------------------------------------------------    |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------   |---------------------------------------------------------------------------------------------------------------------------------  |
 | [pdqselect](./include/miniselect/pdqselect.h)                 | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+n%29)     | At least ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n). Random data ![\large 2.5n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2.5n)                                                                                                          | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)                           |
-| [FloydRivest](./include/miniselect/floyd_rivest_select.h)               | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n^2 )](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5E2+%29)           | ![\large n + \min(k, n - k) + O(\sqrt{n \log n})](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n+%2B+%5Cmin%28k%2C+n+-+k%29+%2B+O%28%5Csqrt%7Bn+%5Clog+n%7D%29)                                                                                                                              | ![\large O(\log \log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+%5Clog+n%29)  |
+| [FloydRivest](./include/miniselect/floyd_rivest_select.h)               | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n^2 )](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5E2+%29)           | Avg: ![\large n + \min(k, n - k) + O(\sqrt{n \log n})](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n+%2B+%5Cmin%28k%2C+n+-+k%29+%2B+O%28%5Csqrt%7Bn+%5Clog+n%7D%29)                                                                                                                              | ![\large O(\log \log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+%5Clog+n%29)  |
 | [MedianOfMedians](./include/miniselect/median_of_medians.h)           | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)                   | Between ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n) and ![\large 22n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+22n). Random data  ![\large 2.5n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2.5n)    | ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29)               |
 | [MedianOfNinthers](./include/miniselect/median_of_ninthers.h)          | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)                   | Between ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n) and ![\large 12n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+12.5n). Random data ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n)       | ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29)              |
 | [libstdc++ (introselect)](https://github.com/gcc-mirror/gcc/blob/e0af865ab9d9d5b6b3ac7fdde26cf9bbf635b6b4/libstdc%2B%2B-v3/include/bits/stl_algo.h#L4748)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+n%29)     | At least ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n). Random data ![\large 3n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+3n)                                                                                                              | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)                             |
 | [libc++ (median of 3)](https://github.com/llvm/llvm-project/blob/3ed89b51da38f081fedb57727076262abb81d149/libcxx/include/algorithm#L5159)     | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n^2 )](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5E2+%29)           | At least ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n). Random data ![\large 3n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+3n)                                                                                                              | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)                           |
 
-For sorting the situation is similar except every line adds ![\large O(k\log k)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28k%5Clog+k%29) comparisons and all algorithms with ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29) memory are using ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29) memory with one exception called partial sorting in C++ standard library.
+For sorting the situation is similar except every line adds ![\large O(k\log k)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28k%5Clog+k%29) comparisons and pdqselect is using ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29) memory with one more general exception called partial sorting in C++ standard library.
 
 | Name              | Average                                                                                                              | Best Case                                                                                               | Worst Case                                                                                                            | Comparisons                                                                                                                                                    | Memory                                                                                                                            |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------- |
 | [std::partial_sort](https://github.com/llvm/llvm-project/blob/3ed89b51da38f081fedb57727076262abb81d149/libcxx/include/algorithm#L5074) | ![\large O(n\log k)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+k%29) | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29) | ![\large O(n\log k)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+k%29) | ![\large n\log k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n%5Clog+k) on average, for some data patterns might be better | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)                          |
 
+## API
+
+All functions end either in `select`, either in `partial_sort` and
+their behaviour is exactly the same as for
+[`std::nth_element`](https://en.cppreference.com/w/cpp/algorithm/nth_element)
+and [`std::partial_sort`](https://en.cppreference.com/w/cpp/algorithm/partial_sort)
+respectively, i.e. they accept 3 arguments as `first`, `middle`, `end` iterators
+and an optional comparator. Several notes:
+
+* There is no specification on how `Compare` function can be copied across the
+calls, we assume that you don't store anything heavy there and we are free to
+pass `Compare` by value.
+* You should not throw exceptions from `Compare` function. Standard library
+also does not specify the behaviour in that matter.
+* We don't support ParallelSTL for now.
+* C++20 constexpr specifiers might be added but currently we don't have them
+because of some floating point math in several algorithms.
+* All functions are in the `miniselect` namespace. See the example for that.
+
+- PDQSelect
+  - This algorithm is based on [`pdqsort`](https://github.com/orlp/pdqsort) which is acknowledged as one of the fastest generic sort algorithms.
+  - **Location:** [`miniselect/pdqselect.h`](./include/miniselect/pdqselect.h).
+  - **Functions:** `pdqselect`, `pdqselect_branchless`, `pdqpartial_sort`, `pdqpartial_sort_branchless`. Branchless version uses branchless partition algorithm provided by [`pdqsort`](https://github.com/orlp/pdqsort). Use it if your comparison function is branchless, it might give performance for very big ranges.
+  - **Performance advice:** Use it when you need to sort a big chunk so that ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) is close to ![\large n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n).
+
+- FloydRivest
+  - This algorithm is based on [Floyd-Rivest algorithm](https://en.wikipedia.org/wiki/Floyd%E2%80%93Rivest_algorithm).
+  - **Location:** [`miniselect/floyd_rivest_select.h`](./include/miniselect/floyd_rivest_select.h).
+  - **Functions:** `floyd_rivest_select`, `floyd_rivest_partial_sort`.
+  - **Performance advice:** Given that this algorithm performs as one of the best on average case in terms of comparisons and speed, we highly advise to
+  at least try this in your project. Especially it is good for small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) or types that are expensive to compare (for example, strings). But even for median the benchmarks show it outperforms others. It is not easy for this algorithm to build a reasonable worst case but one of examples when this algorithm does not perform well is when there are lots of similar values of linear size (random10 dataset showed some moderate penalties).
+
+- MedianOfMedians
+  - This algorithm is based on [Median of Medians](https://en.wikipedia.org/wiki/Median_of_medians) algorithm, one of the first deterministic linear time worst case median algorithm
+  - **Location:** [`miniselect/median_of_medians.h`](./include/miniselect/median_of_medians.h).
+  - **Functions:** `median_of_medians_select`, `median_of_medians_partial_sort`.
+  - **Performance advice:** This algorithm does not show advantages over others, implemented for historical reasons and for bechmarking.
+
+- MedianOfNinthers
+  - This algorithm is based on [Fast Deterministic Selection](https://erdani.com/research/sea2017.pdf) paper by Andrei Alexandrescu, one of the latest and fastest deterministic linear time worst case median algorithms
+  - **Location:** [`miniselect/median_of_ninthers.h`](./include/miniselect/median_of_ninthers.h).
+  - **Functions:** `median_of_ninthers_select`, `median_of_ninthers_partial_sort`.
+  - **Performance advice:** Use this algorithm if you absolutely need linear time worst case scenario for selection algorithm. This algorithm shows some strengths over other deterministic [`PICK`](https://en.wikipedia.org/wiki/Median_of_medians) algorithms and has lower constanst than MedianOfMedians.
+
+- Introselect
+  - This algorithm is based on [Introselect](https://en.wikipedia.org/wiki/Introselect) algorithm, it is used in libstdc++ in `std::nth_element`, however instead of falling back to MedianOfMedians it is using HeapSelect which adds logarithm to its worst complexity.
+  - **Location:** `<algorithm>`.
+  - **Functions:** `std::nth_element`.
+  - **Performance advice:** This algorithm is used in standard library and is not recommended to use if you seek for performance.
+
+- MedianOf3
+  - This algorithm is based on QuickSelect with pivot choice algorithm, it is used in libc++ in `std::nth_element`.
+  - **Location:** `<algorithm>`.
+  - **Functions:** `std::nth_element`.
+  - **Performance advice:** This algorithm is used in standard library and is not recommended to use if you seek for performance.
+
+- `std::partial_sort`
+  - This algorithm has [heap-based solutions](https://en.wikipedia.org/wiki/Partial_sorting) both in libc++ and libstdc++, from the first ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) elements the max heap is built, then one by one the elements are trying to be pushed to that heap with HeapSort in the end.
+  - **Location:** `<algorithm>`.
+  - **Functions:** `std::partial_sort`.
+  - **Performance advice:** This algorithm is very good for random data and small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) and might outperform all selection+sort algorithms. However, for descending data it starts to significantly degrade and is not recommended for use if you have such patterns in real data.
+
+## Other algorithms to come
+
+* Kiwiel modification of FloydRivest algorithm which is described in [On Floyd and Rivest’s SELECT algorithm](https://core.ac.uk/download/pdf/82672439.pdf) with ternary and quintary pivots
+* Random Median of 3 choices
+* Combination of FloydRivest and pdqsort pivot strategies, currently all experiments did not show any boost
 
 Performance results
 -------------------
@@ -110,11 +179,36 @@ Performance results
 Real-world usage
 ----------------
 
+- [Yandex ClickHouse](https://github.com/yandex/ClickHouse)
+
+If you are planning to use miniselect in your product, please work from one of
+our releases and if you wish, you can write the acknowledgement in this section
+for visibility.
+
 Contributing
 ------------
 
+Patches are welcome with new algorithms! You should add the selection algorithm
+together with the partial sorting algorithm in [include](./include), add
+tests in [testing](./testing) and ideally run benchmarks to see how it performs.
+If you also have some data cases to test against, we would be more than happy
+to merge them.
+
 Motivation
 ----------
+
+Firstly the author was interested if any research had been done for small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k)
+in selection algorithms and was struggling to find working implementations to
+compare different approaches from standard library and quickselect algorithms.
+After that it turned out that the problem is much more interesting than it looks
+like and after reading The Art of Computer Programming from Donald Knuth about
+minimum comparison sorting and selection algorithms the author decided to look
+through all nonpopular algorithms and try them out.
+
+The author have not found any decent library for selection algorithms and little
+research is published in open source, so that they decided to merge all that
+implementations and compare them with possible merging of different ideas
+into a decent one algorithm for most needs.
 
 License
 -------
