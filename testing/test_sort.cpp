@@ -4,13 +4,17 @@
  *          https://boost.org/LICENSE_1_0.txt)
  */
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <algorithm>
 #include <memory>
 #include <random>
+#include <string>
 #include <vector>
 
 #include "test_common.h"
+
+using ::testing::Eq;
 
 namespace miniselect {
 namespace {
@@ -90,6 +94,31 @@ class PartialSortTest : public ::testing::Test {
 };
 
 TYPED_TEST_SUITE(PartialSortTest, algorithms::All);
+
+TYPED_TEST(PartialSortTest, TestSmall) {
+  std::vector<std::string> v = {"ab", "aaa", "ab"};
+  TypeParam::Sort(v.begin(), v.begin() + 1, v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"aaa", "ab", "ab"}));
+  v = {"aba"};
+  TypeParam::Sort(v.begin(), v.begin(), v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"aba"}));
+  v.clear();
+  TypeParam::Sort(v.begin(), v.end(), v.end());
+  EXPECT_TRUE(v.empty());
+}
+
+TYPED_TEST(PartialSortTest, TestAnotherSmall) {
+  std::vector<std::string> v = {"ab", "ab", "aaa"};
+  TypeParam::Sort(v.begin(), v.begin() + 1, v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"aaa", "ab", "ab"}));
+}
+
+TYPED_TEST(PartialSortTest, TestEmptySmall) {
+  std::vector<std::string> v = {"", ""};
+  TypeParam::Sort(v.begin(), v.begin() + 1, v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"", ""}));
+}
+
 
 TYPED_TEST(PartialSortTest, TestBasic) { TestFixture::TestManySorts(); }
 

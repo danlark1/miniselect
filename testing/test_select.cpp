@@ -4,13 +4,17 @@
  *          https://boost.org/LICENSE_1_0.txt)
  */
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <algorithm>
 #include <memory>
 #include <random>
+#include <string>
 #include <vector>
 
 #include "test_common.h"
+
+using ::testing::Eq;
 
 namespace miniselect {
 namespace {
@@ -103,17 +107,99 @@ class SelectTest : public ::testing::Test {
     }
   }
 
-  static void TestRepeated(size_t N, size_t M) {
-
+  static void TestRepeat(size_t N, size_t M) {
+    ASSERT_NE(N, 0);
+    ASSERT_GT(N, M);
+    SCOPED_TRACE(N);
+    SCOPED_TRACE(M);
+    std::mt19937_64 mersenne_engine(10);
+    std::vector<bool> array(N);
+    for (size_t i = 0; i < M; ++i) {
+      array[i] = false;
+    }
+    for (size_t i = M; i < N; ++i) {
+      array[i] = true;
+    }
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    Selector::Select(array.begin(), array.begin() + M, array.end());
+    EXPECT_EQ(array[M], true);
+    for (size_t i = 0; i < M; ++i) {
+      EXPECT_EQ(array[i], false);
+    }
+    for (size_t i = M; i < N; ++i) {
+      EXPECT_EQ(array[i], true);
+    }
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    Selector::Select(array.begin(), array.begin() + M / 2, array.end());
+    EXPECT_EQ(array[M / 2], false);
+    for (size_t i = 0; i < M / 2; ++i) {
+      EXPECT_EQ(array[i], false);
+    }
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    Selector::Select(array.begin(), array.begin() + M - 1, array.end());
+    EXPECT_EQ(array[M - 1], false);
+    for (size_t i = 0; i < M - 1; ++i) {
+      EXPECT_EQ(array[i], false);
+    }
   }
+
+  static void TestRepeats(size_t N) {
+    TestRepeat(N, 1);
+    TestRepeat(N, 2);
+    TestRepeat(N, 3);
+    TestRepeat(N, N / 2 - 1);
+    TestRepeat(N, N / 2);
+    TestRepeat(N, N / 2 + 1);
+    TestRepeat(N, N - 2);
+    TestRepeat(N, N - 1);
+  }
+
+  static void TestManyRepeats() {
+    TestRepeats(10);
+    TestRepeats(100);
+    TestRepeats(257);
+    TestRepeats(1000);
+    TestRepeats(100000);
+  }
+
 };
 
 TYPED_TEST_SUITE(SelectTest, algorithms::All);
 
-TYPED_TEST(SelectTest, TestBasic) { TestFixture::TestManySelects(); }
+TYPED_TEST(SelectTest, TestSmall) {
+  std::vector<std::string> v = {"ab", "aaa", "ab"};
+  TypeParam::Select(v.begin(), v.begin() + 1, v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"aaa", "ab", "ab"}));
+  v = {"aba"};
+  TypeParam::Select(v.begin(), v.begin(), v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"aba"}));
+  v.clear();
+  TypeParam::Select(v.begin(), v.end(), v.end());
+  EXPECT_TRUE(v.empty());
+}
+
+TYPED_TEST(SelectTest, TestAnotherSmall) {
+  std::vector<std::string> v = {"ab", "ab", "aaa"};
+  TypeParam::Select(v.begin(), v.begin() + 1, v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"aaa", "ab", "ab"}));
+}
+
+TYPED_TEST(SelectTest, TestEmptySmall) {
+  std::vector<std::string> v = {"", ""};
+  TypeParam::Select(v.begin(), v.begin() + 1, v.end());
+  EXPECT_THAT(v, Eq(std::vector<std::string>{"", ""}));
+}
+
+TYPED_TEST(SelectTest, TestBasic) {
+  TestFixture::TestManySelects();
+}
 
 TYPED_TEST(SelectTest, TestComparators) {
   TestFixture::TestCustomComparators();
+}
+
+TYPED_TEST(SelectTest, TestRepeats) {
+  TestFixture::TestManyRepeats();
 }
 
 TYPED_TEST(SelectTest, TestLast) {
