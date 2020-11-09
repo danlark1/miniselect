@@ -143,8 +143,8 @@ because of some floating point math in several algorithms.
 We present here two gifs, for median and for n / 10 order statistic.
 
 <p float="left">
-  <img src="https://media.giphy.com/media/a5ORb22iMCE0a6D2cf/giphy.gif" />
-  <img src="https://media.giphy.com/media/Gpk4c9pHMJLbjugDmZ/giphy.gif" />
+  <img src="https://media.giphy.com/media/a5ORb22iMCE0a6D2cf/giphy.gif" width="45%" />
+  <img src="https://media.giphy.com/media/Gpk4c9pHMJLbjugDmZ/giphy.gif" width="45%" />
 </p>
 
 - Median Of Medians
