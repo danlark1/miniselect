@@ -3,8 +3,8 @@
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          https://boost.org/LICENSE_1_0.txt)
  */
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include <algorithm>
 #include <memory>
@@ -161,7 +161,6 @@ class SelectTest : public ::testing::Test {
     TestRepeats(1000);
     TestRepeats(100000);
   }
-
 };
 
 TYPED_TEST_SUITE(SelectTest, algorithms::All);
@@ -190,17 +189,13 @@ TYPED_TEST(SelectTest, TestEmptySmall) {
   EXPECT_THAT(v, Eq(std::vector<std::string>{"", ""}));
 }
 
-TYPED_TEST(SelectTest, TestBasic) {
-  TestFixture::TestManySelects();
-}
+TYPED_TEST(SelectTest, TestBasic) { TestFixture::TestManySelects(); }
 
 TYPED_TEST(SelectTest, TestComparators) {
   TestFixture::TestCustomComparators();
 }
 
-TYPED_TEST(SelectTest, TestRepeats) {
-  TestFixture::TestManyRepeats();
-}
+TYPED_TEST(SelectTest, TestRepeats) { TestFixture::TestManyRepeats(); }
 
 TYPED_TEST(SelectTest, TestLast) {
   std::vector<int> array(100);

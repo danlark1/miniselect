@@ -10,6 +10,7 @@
 #include <algorithm>
 
 #include "miniselect/floyd_rivest_select.h"
+#include "miniselect/median_of_3_random.h"
 #include "miniselect/median_of_medians.h"
 #include "miniselect/median_of_ninthers.h"
 #include "miniselect/pdqselect.h"
@@ -149,10 +150,31 @@ struct MedianOfMedians {
   }
 };
 
+struct MedianOf3Random {
+  template <class Iter, class Compare>
+  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
+    median_of_3_random_sort(begin, mid, end, comp);
+  }
+
+  template <class Iter>
+  static void Sort(Iter begin, Iter mid, Iter end) {
+    median_of_3_random_sort(begin, mid, end);
+  }
+
+  template <class Iter, class Compare>
+  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
+    median_of_3_random_select(begin, mid, end, comp);
+  }
+
+  template <class Iter>
+  static void Select(Iter begin, Iter mid, Iter end) {
+    median_of_3_random_select(begin, mid, end);
+  }
+};
+
 using All =
-    ::testing::Types<algorithms::STD, algorithms::PDQ,
-                     algorithms::PDQBranchless, algorithms::FloydRivest,
-                     algorithms::MedianOfNinthers, algorithms::MedianOfMedians>;
+    ::testing::Types<STD, PDQ, PDQBranchless, FloydRivest, MedianOfNinthers,
+                     MedianOfMedians, MedianOf3Random>;
 
 }  // namespace algorithms
 }  // namespace miniselect
