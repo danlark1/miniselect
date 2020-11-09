@@ -22,11 +22,11 @@ namespace {
 struct IndirectLess {
   // Non const comparator with deleted copy.
   template <class P>
-  bool operator()(const P &x, const P &y) {
+  bool operator()(const P &x, const P &y) const {
     return *x < *y;
   }
-  IndirectLess(const IndirectLess &) = delete;
-  IndirectLess &operator=(const IndirectLess &) = delete;
+  IndirectLess(const IndirectLess &) = default;
+  IndirectLess &operator=(const IndirectLess &) = default;
   IndirectLess(IndirectLess &&) = default;
   IndirectLess &operator=(IndirectLess &&) = default;
 };
