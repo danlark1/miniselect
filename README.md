@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/danlark1/miniselect.svg?branch=main)](https://travis-ci.com/danlark1/miniselect)
 [![License](https://img.shields.io/badge/License-Boost%201.0-lightblue.svg)](https://www.boost.org/LICENSE_1_0.txt)
 
-miniselect : Generic selection and partial ordering algorithms
+miniselect: Generic selection and partial ordering algorithms
 ==============================================================
 
 `miniselect` is a C++ header-only library that contains various generic selection
@@ -72,10 +72,9 @@ To test and benchmark, we use [Google benchmark](https://github.com/google/bench
 Simply do in the root directory:
 
 ```console
-# Check out the library.
+# Check out the libraries.
 $ git clone https://github.com/google/benchmark.git
-# Benchmark requires Google Test as a dependency. Add the source tree as a subdirectory.
-$ git clone https://github.com/google/googletest.git benchmark/googletest
+$ git clone https://github.com/google/googletest.git
 $ mkdir build && cd build
 $ cmake -DMINISELECT_TESTING=on ..
 $ make -j
@@ -164,7 +163,7 @@ We present here two gifs, for median and for ![\large k = n / 10](https://render
 <p align="center"><img src="https://media.giphy.com/media/usKlqJoh1WVLWLU9Dt/giphy.gif" /></p>
 
 - Median Of 3 Random
-  - This algorithm is based on QuickSelect with the random median of 3 pivot choice algorithm (it chooses random 3 elements in the range and takes the middle value). It is a rando
+  - This algorithm is based on QuickSelect with the random median of 3 pivot choice algorithm (it chooses random 3 elements in the range and takes the middle value). It is a randomized algorithm.
   - **Location:** [`miniselect/median_of_3_random.h`](./include/miniselect/median_of_3_random.h).
   - **Functions:** `median_of_3_random_select`, `median_of_3_random_partial_sort`.
   - **Performance advice:** This is a randomized algorithm and also it did not show any strengths against Median Of Ninthers.

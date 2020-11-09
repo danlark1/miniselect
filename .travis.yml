@@ -123,7 +123,7 @@ matrix:
 before_install:
   - eval "${COMPILER}"
   - git clone https://github.com/google/benchmark.git
-  - git clone https://github.com/google/googletest.git benchmark/googletest
+  - git clone https://github.com/google/googletest.git
 
 install:
   - export CMAKE_FLAGS="-DMINISELECT_TESTING=on -DCMAKE_BUILD_TYPE=RelWithDebInfo";
