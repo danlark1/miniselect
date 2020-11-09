@@ -556,8 +556,8 @@ inline void pdqsort_loop(Iter begin, Iter end, Compare& comp, int bad_allowed,
       // If we had too many bad partitions, switch to heapsort to guarantee O(n
       // log n).
       if (--bad_allowed == 0) {
-        std::make_heap<Iter, CompType>(begin, end, comp);
-        std::sort_heap<Iter, CompType>(begin, end, comp);
+        std::make_heap(begin, end, comp);
+        std::sort_heap(begin, end, comp);
         return;
       }
 
@@ -660,8 +660,8 @@ inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare& comp,
       // If we had too many bad partitions, switch to heapsort to guarantee O(n
       // log n).
       if (--bad_allowed == 0) {
-        std::make_heap<Iter, CompType>(begin, end, comp);
-        std::sort_heap<Iter, CompType>(begin, end, comp);
+        std::make_heap(begin, end, comp);
+        std::sort_heap(begin, end, comp);
         return;
       }
 
@@ -769,7 +769,7 @@ inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare& comp,
       // If we had too many bad partitions, switch to heapsort to guarantee O(n
       // log n).
       if (--bad_allowed == 0) {
-        std::nth_element<Iter, CompType>(begin, mid, end, comp);
+        std::nth_element(begin, mid, end, comp);
         return;
       }
 
