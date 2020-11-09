@@ -137,7 +137,7 @@ struct Median3Killer {
 
 #define BENCH_IMPL(BENCH, GEN, IMPL)   \
   BENCHMARK_TEMPLATE(BENCH, GEN, IMPL) \
-      ->Unit(benchmark::kMicrosecond)  \
+      ->Unit(benchmark::kMicrosenond)  \
       ->Arg(kSize - 10)                \
       ->Arg(kSize / 2)                 \
       ->Arg(10000)                     \
@@ -161,6 +161,7 @@ struct Median3Killer {
   BENCH_GENS(NAME, algorithms::FloydRivest);      \
   BENCH_GENS(NAME, algorithms::MedianOfNinthers); \
   BENCH_GENS(NAME, algorithms::MedianOfMedians);  \
+  BENCH_GENS(NAME, algorithms::MedianOf3Random);  \
   BENCH_GENS(NAME, algorithms::PDQ);              \
   BENCH_GENS(NAME, algorithms::PDQBranchless);    \
   BENCH_GENS(NAME, algorithms::STD)
