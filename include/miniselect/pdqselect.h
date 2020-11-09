@@ -501,7 +501,6 @@ template <class Iter, class Compare, bool Branchless>
 inline void pdqsort_loop(Iter begin, Iter end, Compare& comp, int bad_allowed,
                          bool leftmost = true) {
   typedef typename std::iterator_traits<Iter>::difference_type diff_t;
-  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
   // Use a while loop for tail recursion elimination.
   while (true) {
@@ -606,7 +605,7 @@ template <class Iter, class Compare, bool Branchless>
 inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare& comp,
                                  int bad_allowed, bool leftmost = true) {
   typedef typename std::iterator_traits<Iter>::difference_type diff_t;
-  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
+
   // Use a while loop for tail recursion elimination.
   while (true) {
     diff_t size = end - begin;
@@ -714,7 +713,6 @@ template <class Iter, class Compare, bool Branchless>
 inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare& comp,
                            int bad_allowed, bool leftmost = true) {
   typedef typename std::iterator_traits<Iter>::difference_type diff_t;
-  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
   // Use a while loop for tail recursion elimination.
   while (true) {
