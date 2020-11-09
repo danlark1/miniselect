@@ -3,8 +3,8 @@
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          https://boost.org/LICENSE_1_0.txt)
  */
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include <algorithm>
 #include <memory>
