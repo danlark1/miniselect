@@ -115,9 +115,6 @@ and [`std::partial_sort`](https://en.cppreference.com/w/cpp/algorithm/partial_so
 respectively, i.e. they accept 3 arguments as `first`, `middle`, `end` iterators
 and an optional comparator. Several notes:
 
-* There is no specification on how `Compare` function can be copied across the
-calls, we assume that you don't store anything heavy there and we are free to
-pass `Compare` by value.
 * You should not throw exceptions from `Compare` function. Standard library
 also does not specify the behavior in that matter.
 * We don't support ParallelSTL for now.

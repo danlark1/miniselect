@@ -11,15 +11,23 @@
 #pragma once
 
 #include <cassert>
+#include <type_traits>
 #include <utility>
 
 namespace miniselect {
 namespace median_common_detail {
+
+template <class Compare>
+struct CompareRefType {
+  // Pass the comparator by lvalue reference. Or in debug mode, using a
+  // debugging wrapper that stores a reference.
+  using type = typename std::add_lvalue_reference<Compare>::type;
+};
 /**
 Swaps the median of r[a], r[b], and r[c] into r[b].
 */
 template <class Iter, class Compare>
-void median3(Iter r, size_t a, size_t b, size_t c, Compare comp) {
+void median3(Iter r, size_t a, size_t b, size_t c, Compare&& comp) {
   if (comp(r[b], r[a]))  // b < a
   {
     if (comp(r[b], r[c]))  // b < a, b < c
@@ -42,7 +50,7 @@ void median3(Iter r, size_t a, size_t b, size_t c, Compare comp) {
 Sorts in place r[a], r[b], and r[c].
 */
 template <class Iter, class Compare>
-void sort3(Iter r, size_t a, size_t b, size_t c, Compare comp) {
+void sort3(Iter r, size_t a, size_t b, size_t c, Compare&& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
   if (comp(r[b], r[a]))  // b < a
   {
@@ -85,7 +93,8 @@ the minimum into r[a]. If leanRight == true, swaps the upper median of
 r[a]...r[d] into r[c] and the minimum into r[d].
 */
 template <bool leanRight, class Iter, class Compare>
-void partition4(Iter r, size_t a, size_t b, size_t c, size_t d, Compare comp) {
+void partition4(Iter r, size_t a, size_t b, size_t c, size_t d,
+                Compare&& comp) {
   assert(a != b && a != c && a != d && b != c && b != d && c != d);
   /* static */ if (leanRight) {
     // In the median of 5 algorithm, consider r[e] infinite
@@ -130,7 +139,7 @@ around it.
 */
 template <class Iter, class Compare>
 void partition5(Iter r, size_t a, size_t b, size_t c, size_t d, size_t e,
-                Compare comp) {
+                Compare&& comp) {
   assert(a != b && a != c && a != d && a != e && b != c && b != d && b != e &&
          c != d && c != e && d != e);
   if (comp(r[c], r[a])) {
@@ -162,7 +171,7 @@ void partition5(Iter r, size_t a, size_t b, size_t c, size_t d, size_t e,
 Implements Hoare partition.
 */
 template <class Iter, class Compare>
-Iter pivotPartition(Iter r, size_t k, size_t length, Compare comp) {
+Iter pivotPartition(Iter r, size_t k, size_t length, Compare&& comp) {
   assert(k < length);
   std::swap(*r, r[k]);
   size_t lo = 1, hi = length - 1;
@@ -189,7 +198,7 @@ loop_done:
 Implements the quickselect algorithm, parameterized with a partition function.
 */
 template <class Iter, class Compare, Iter (*partition)(Iter, Iter, Compare)>
-void quickselect(Iter r, Iter mid, Iter end, Compare comp) {
+void quickselect(Iter r, Iter mid, Iter end, Compare&& comp) {
   if (r == end || mid >= end) return;
   assert(r <= mid && mid < end);
   for (;;) switch (end - r) {
@@ -250,7 +259,7 @@ Returns the index of the median of r[a], r[b], and r[c] without writing
 anything.
 */
 template <class Iter, class Compare>
-size_t medianIndex(const Iter r, size_t a, size_t b, size_t c, Compare comp) {
+size_t medianIndex(const Iter r, size_t a, size_t b, size_t c, Compare&& comp) {
   if (r[a] > r[c]) std::swap(a, c);
   if (r[b] > r[c]) return c;
   if (comp(r[b], r[a])) return a;
@@ -264,7 +273,7 @@ the lower median.
 */
 template <bool leanRight, class Iter, class Compare>
 static size_t medianIndex(Iter r, size_t a, size_t b, size_t c, size_t d,
-                          Compare comp) {
+                          Compare&& comp) {
   if (comp(r[d], r[c])) std::swap(c, d);
   assert(r[c] <= r[d]);
   /* static */ if (leanRight) {
@@ -290,7 +299,7 @@ median of those three medians into r[_5].
 */
 template <class Iter, class Compare>
 void ninther(Iter r, size_t _1, size_t _2, size_t _3, size_t _4, size_t _5,
-             size_t _6, size_t _7, size_t _8, size_t _9, Compare comp) {
+             size_t _6, size_t _7, size_t _8, size_t _9, Compare&& comp) {
   _2 = medianIndex(r, _1, _2, _3, comp);
   _8 = medianIndex(r, _7, _8, _9, comp);
   if (comp(r[_8], r[_2])) std::swap(_2, _8);
@@ -325,7 +334,7 @@ Output guarantee: same as Hoare partition using r[0] as pivot. Returns the new
 position of the pivot.
 */
 template <class Iter, class Compare>
-size_t expandPartitionRight(Iter r, size_t hi, size_t rite, Compare comp) {
+size_t expandPartitionRight(Iter r, size_t hi, size_t rite, Compare&& comp) {
   size_t pivot = 0;
   assert(pivot <= hi);
   assert(hi <= rite);
@@ -361,7 +370,7 @@ Output guarantee: Same as Hoare partition around r[pivot]. Returns the new
 position of the pivot.
 */
 template <class Iter, class Compare>
-size_t expandPartitionLeft(Iter r, size_t lo, size_t pivot, Compare comp) {
+size_t expandPartitionLeft(Iter r, size_t lo, size_t pivot, Compare&& comp) {
   assert(lo > 0 && lo <= pivot);
   size_t left = 0;
   const auto oldPivot = pivot;
@@ -402,7 +411,7 @@ position of the pivot.
 */
 template <class Iter, class Compare>
 size_t expandPartition(Iter r, size_t lo, size_t pivot, size_t hi,
-                       size_t length, Compare comp) {
+                       size_t length, Compare&& comp) {
   assert(lo <= pivot && pivot < hi && hi <= length);
   --hi;
   --length;

@@ -16,7 +16,8 @@ namespace miniselect {
 namespace median_of_medians_detail {
 
 template <class Iter, class Compare>
-static inline Iter partition(Iter r, Iter end, Compare comp) {
+static inline Iter partition(Iter r, Iter end, Compare&& comp) {
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
   const size_t len = end - r;
   if (len < 5) {
     return median_common_detail::pivotPartition(r, len / 2, len, comp);
@@ -26,8 +27,8 @@ static inline Iter partition(Iter r, Iter end, Compare comp) {
     median_common_detail::partition5(r, i - 4, i - 3, i, i - 2, i - 1, comp);
     std::swap(r[i], r[j]);
   }
-  median_common_detail::quickselect<Iter, Compare, &partition>(r, r + j / 2,
-                                                               r + j, comp);
+  median_common_detail::quickselect<Iter, CompType, &partition>(r, r + j / 2,
+                                                                r + j, comp);
   return median_common_detail::pivotPartition(r, j / 2, len, comp);
 }
 
@@ -37,9 +38,10 @@ template <class Iter, class Compare>
 inline void median_of_medians_select(Iter begin, Iter mid, Iter end,
                                      Compare comp) {
   if (mid == end) return;
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
   median_common_detail::quickselect<
-      Iter, Compare, &median_of_medians_detail::partition<Iter, Compare>>(
+      Iter, CompType, &median_of_medians_detail::partition<Iter, CompType>>(
       begin, mid, end, comp);
 }
 
@@ -53,10 +55,11 @@ template <class Iter, class Compare>
 inline void median_of_medians_sort(Iter begin, Iter mid, Iter end,
                                    Compare comp) {
   if (begin == mid) return;
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
   median_common_detail::quickselect<
-      Iter, Compare, &median_of_medians_detail::partition<Iter, Compare>>(
+      Iter, CompType, &median_of_medians_detail::partition<Iter, CompType>>(
       begin, mid - 1, end, comp);
-  std::sort(begin, mid, comp);
+  std::sort<Iter, CompType>(begin, mid, comp);
 }
 
 template <class Iter>

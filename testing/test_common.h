@@ -20,8 +20,8 @@ namespace algorithms {
 
 struct STD {
   template <class Iter, class Compare>
-  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
-    std::partial_sort(begin, mid, end, comp);
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    std::partial_sort(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -30,8 +30,8 @@ struct STD {
   }
 
   template <class Iter, class Compare>
-  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
-    std::nth_element(begin, mid, end, comp);
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    std::nth_element(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -42,8 +42,8 @@ struct STD {
 
 struct PDQ {
   template <class Iter, class Compare>
-  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
-    pdqpartial_sort(begin, mid, end, comp);
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    pdqpartial_sort(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -52,8 +52,8 @@ struct PDQ {
   }
 
   template <class Iter, class Compare>
-  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
-    pdqselect(begin, mid, end, comp);
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    pdqselect(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -64,8 +64,8 @@ struct PDQ {
 
 struct PDQBranchless {
   template <class Iter, class Compare>
-  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
-    pdqpartial_sort_branchless(begin, mid, end, comp);
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    pdqpartial_sort_branchless(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -74,8 +74,8 @@ struct PDQBranchless {
   }
 
   template <class Iter, class Compare>
-  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
-    pdqselect_branchless(begin, mid, end, comp);
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    pdqselect_branchless(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -86,8 +86,8 @@ struct PDQBranchless {
 
 struct FloydRivest {
   template <class Iter, class Compare>
-  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
-    floyd_rivest_partial_sort(begin, mid, end, comp);
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    floyd_rivest_partial_sort(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -96,8 +96,8 @@ struct FloydRivest {
   }
 
   template <class Iter, class Compare>
-  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
-    floyd_rivest_select(begin, mid, end, comp);
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    floyd_rivest_select(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -108,8 +108,8 @@ struct FloydRivest {
 
 struct MedianOfNinthers {
   template <class Iter, class Compare>
-  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
-    median_of_ninthers_sort(begin, mid, end, comp);
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    median_of_ninthers_sort(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -118,8 +118,8 @@ struct MedianOfNinthers {
   }
 
   template <class Iter, class Compare>
-  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
-    median_of_ninthers_select(begin, mid, end, comp);
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    median_of_ninthers_select(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -130,8 +130,8 @@ struct MedianOfNinthers {
 
 struct MedianOfMedians {
   template <class Iter, class Compare>
-  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
-    median_of_medians_sort(begin, mid, end, comp);
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    median_of_medians_sort(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -140,8 +140,8 @@ struct MedianOfMedians {
   }
 
   template <class Iter, class Compare>
-  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
-    median_of_medians_select(begin, mid, end, comp);
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    median_of_medians_select(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -152,8 +152,8 @@ struct MedianOfMedians {
 
 struct MedianOf3Random {
   template <class Iter, class Compare>
-  static void Sort(Iter begin, Iter mid, Iter end, Compare comp) {
-    median_of_3_random_sort(begin, mid, end, comp);
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    median_of_3_random_sort(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
@@ -162,8 +162,8 @@ struct MedianOf3Random {
   }
 
   template <class Iter, class Compare>
-  static void Select(Iter begin, Iter mid, Iter end, Compare comp) {
-    median_of_3_random_select(begin, mid, end, comp);
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    median_of_3_random_select(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>

@@ -23,14 +23,14 @@ namespace miniselect {
 namespace median_of_ninthers_detail {
 
 template <class Iter, class Compare>
-void adaptiveQuickselect(Iter beg, size_t n, size_t length, Compare comp);
+void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare&& comp);
 
 /**
 Median of minima
 */
 template <class Iter, class Compare>
 size_t medianOfMinima(Iter const r, const size_t n, const size_t length,
-                      Compare comp) {
+                      Compare&& comp) {
   assert(length >= 2);
   assert(n * 4 <= length);
   assert(n > 0);
@@ -53,7 +53,7 @@ Median of maxima
 */
 template <class Iter, class Compare>
 size_t medianOfMaxima(Iter const r, const size_t n, const size_t length,
-                      Compare comp) {
+                      Compare&& comp) {
   assert(length >= 2);
   assert(n * 4 >= length * 3 && n < length);
   const size_t subset = (length - n) * 2, subsetStart = length - subset,
@@ -78,7 +78,7 @@ Partitions r[0 .. length] using a pivot of its own choosing. Attempts to pick a
 pivot that approximates the median. Returns the position of the pivot.
 */
 template <class Iter, class Compare>
-size_t medianOfNinthers(Iter const r, const size_t length, Compare comp) {
+size_t medianOfNinthers(Iter const r, const size_t length, Compare&& comp) {
   assert(length >= 12);
   const auto frac = length <= 1024
                         ? length / 12
@@ -106,7 +106,7 @@ Dispathes to each depending on the relationship between n (the sought order
 statistics) and length.
 */
 template <class Iter, class Compare>
-void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare comp) {
+void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare&& comp) {
   assert(n < length);
   for (;;) {
     // Decide strategy for partitioning
@@ -158,8 +158,9 @@ template <class Iter, class Compare>
 inline void median_of_ninthers_select(Iter begin, Iter mid, Iter end,
                                       Compare comp) {
   if (mid == end) return;
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
-  median_of_ninthers_detail::adaptiveQuickselect<Iter, Compare>(
+  median_of_ninthers_detail::adaptiveQuickselect<Iter, CompType>(
       begin, mid - begin, end - begin, comp);
 }
 
@@ -173,9 +174,11 @@ template <class Iter, class Compare>
 inline void median_of_ninthers_sort(Iter begin, Iter mid, Iter end,
                                     Compare comp) {
   if (begin == mid) return;
-  median_of_ninthers_detail::adaptiveQuickselect<Iter, Compare>(
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
+
+  median_of_ninthers_detail::adaptiveQuickselect<Iter, CompType>(
       begin, mid - begin - 1, end - begin, comp);
-  std::sort(begin, mid, comp);
+  std::sort<Iter, CompType>(begin, mid, comp);
 }
 
 template <class Iter>
