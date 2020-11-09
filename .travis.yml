@@ -123,6 +123,7 @@ matrix:
 
 before_install:
   - eval "${COMPILER}"
+  - cd danlark1/miniselect
   - git clone https://github.com/google/benchmark.git
   - git clone https://github.com/google/googletest.git benchmark/googletest
 
