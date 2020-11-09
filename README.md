@@ -78,10 +78,12 @@ $ git clone https://github.com/google/googletest.git benchmark/googletest
 $ mkdir build && cd build
 $ cmake -DMINISELECT_TESTING=on ..
 $ make -j
+$ ctest -j4 --output-on-failure
 ```
 
 It will create two tests and two benchmarks `test_sort`, `test_select`,
-`benchmark_sort`, `benchmark_select`. Use them to validate or contribute.
+`benchmark_sort`, `benchmark_select`. Use them to validate or contribute. You
+can also use `ctest`
 
 Documentation
 -------------

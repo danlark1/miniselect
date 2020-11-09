@@ -9,6 +9,7 @@ option(MINISELECT_ENABLE_FUZZING "Building the library with fuzzing." OFF)
 include_directories(include)
 
 if (MINISELECT_TESTING)
+    enable_testing()
     set(CMAKE_CXX_STANDARD 17)
     if (NOT CMAKE_BUILD_TYPE)
         message(STATUS "No build type selected, default to Release")
