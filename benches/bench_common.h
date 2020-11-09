@@ -137,7 +137,7 @@ struct Median3Killer {
 
 #define BENCH_IMPL(BENCH, GEN, IMPL)   \
   BENCHMARK_TEMPLATE(BENCH, GEN, IMPL) \
-      ->Unit(benchmark::kMicrosenond)  \
+      ->Unit(benchmark::kMicrosecond)  \
       ->Arg(kSize - 10)                \
       ->Arg(kSize / 2)                 \
       ->Arg(10000)                     \
