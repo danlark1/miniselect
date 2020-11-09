@@ -215,9 +215,9 @@ for example, 1000, the results are the following
 
 ![k equals 1000](benches/plots/result_comparisons_10000000_1000.png)
 
-Other values can be found [here](https://drive.google.com/drive/folders/1DHEaeXgZuX6AJ9eByeZ8iQVQv0ueP8XM).
+Other benchmarks can be found [here](https://drive.google.com/drive/folders/1DHEaeXgZuX6AJ9eByeZ8iQVQv0ueP8XM).
 
-The benchmarks for number of swaps will be obtained later.
+The benchmarks for number of swaps will be later.
 
 Real-world usage
 ----------------
