@@ -24,8 +24,11 @@ if (MINISELECT_TESTING)
         message(STATUS "Using libcxx as a default standard C++ library")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
     endif()
+
     set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
     set(BENCHMARK_ENABLE_TESTING OFF)
+    message(STATUS "gtest tests are off")
+
     add_subdirectory(benchmark)
     add_subdirectory(googletest)
     include_directories(testing)
