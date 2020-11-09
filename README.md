@@ -148,7 +148,7 @@ because of some floating point math in several algorithms.
   - **Functions:** `median_of_medians_select`, `median_of_medians_partial_sort`.
   - **Performance advice:** This algorithm does not show advantages over others, implemented for historical reasons and for bechmarking.
 
-<p align="center"><img src="https://media.giphy.com/media/HcX8jgVvI3GegwjwyV/giphy.gif" /></p>
+<p align="center"><img src="https://media.giphy.com/media/C0txh78ngyEGqmrX7c/giphy.gif" /></p>
 
 - Median Of Ninthers
   - This algorithm is based on [Fast Deterministic Selection](https://erdani.com/research/sea2017.pdf) paper by Andrei Alexandrescu, one of the latest and fastest deterministic linear time worst case median algorithms
