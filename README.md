@@ -140,7 +140,7 @@ because of some floating point math in several algorithms.
   - **Performance advice:** Given that this algorithm performs as one of the best on average case in terms of comparisons and speed, we highly advise to
   at least try this in your project. Especially it is good for small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) or types that are expensive to compare (for example, strings). But even for median the benchmarks show it outperforms others. It is not easy for this algorithm to build a reasonable worst case but one of examples when this algorithm does not perform well is when there are lots of similar values of linear size (random01 dataset showed some moderate penalties).
 
-We present here two gifs, for median and for n / 10 order statistic.
+We present here two gifs, for median and for ![\large k = n / 10](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k+%3D+n+%2F+10) order statistic.
 
 <p float="left">
   <img src="https://media.giphy.com/media/a5ORb22iMCE0a6D2cf/giphy.gif" width="48%" />
