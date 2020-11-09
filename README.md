@@ -172,7 +172,7 @@ We present here two gifs, for median and for ![\large k = n / 10](https://render
   - This algorithm is based on [Introselect](https://en.wikipedia.org/wiki/Introselect) algorithm, it is used in libstdc++ in `std::nth_element`, however instead of falling back to MedianOfMedians it is using HeapSelect which adds logarithm to its worst complexity.
   - **Location:** `<algorithm>`.
   - **Functions:** `std::nth_element`.
-  - **Performance advice:** This algorithm is used in standard library and is not recommended to use if you seek for performance.
+  - **Performance advice:** This algorithm is used in standard library and is not recommended to use if you are looking for performance.
 
 <p align="center"><img src="https://media.giphy.com/media/VOBM4MVBpiTgkbA6CH/giphy.gif" /></p>
 
@@ -180,7 +180,7 @@ We present here two gifs, for median and for ![\large k = n / 10](https://render
   - This algorithm is based on QuickSelect with median of 3 pivot choice algorithm (the middle value between begin, mid and end values), it is used in libc++ in `std::nth_element`.
   - **Location:** `<algorithm>`.
   - **Functions:** `std::nth_element`.
-  - **Performance advice:** This algorithm is used in standard library and is not recommended to use if you seek for performance.
+  - **Performance advice:** This algorithm is used in standard library and is not recommended to use if you are looking for performance.
 
 <p align="center"><img src="https://media.giphy.com/media/03eJ0S7H79Jdtrv49F/giphy.gif" /></p>
 
@@ -201,7 +201,7 @@ Performance results
 -------------------
 
 We use 10 datasets and 8 algorithms with 10000000 elements to find median and
-other ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) on `Intel(R) Core(TM) i5-4200H CPU @ 2.80GHz`,
+other ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) on `Intel(R) Core(TM) i5-4200H CPU @ 2.80GHz` for `std::vector<int>`,
 for median the benchmarks are the following:
 
 ![median](benches/plots/result_10000000_5000000.png)
