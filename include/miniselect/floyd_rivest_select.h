@@ -10,10 +10,18 @@
 #include <cstddef>
 #include <functional>
 #include <iterator>
+#include <type_traits>
 #include <utility>
 
 namespace miniselect {
 namespace floyd_rivest_detail {
+
+template <class Compare>
+struct CompareRefType {
+  // Pass the comparator by lvalue reference. Or in debug mode, using a
+  // debugging wrapper that stores a reference.
+  using type = typename std::add_lvalue_reference<Compare>::type;
+};
 
 template <class Iter, class Compare, class Diff>
 inline void floyd_rivest_select_loop(Iter begin, Diff left, Diff right, Diff k,
@@ -78,12 +86,13 @@ inline void floyd_rivest_partial_sort(Iter begin, Iter mid, Iter end,
                                       Compare comp) {
   if (begin == end) return;
   if (begin == mid) return;
+  using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
 
   floyd_rivest_detail::floyd_rivest_select_loop<
-      Iter, Compare, typename std::iterator_traits<Iter>::difference_type>(
+      Iter, CompType, typename std::iterator_traits<Iter>::difference_type>(
       begin, 0, end - begin - 1, mid - begin - 1, comp);
   // std::sort proved to be better than other sorts because of pivoting.
-  std::sort(begin, mid, comp);
+  std::sort<Iter, CompType>(begin, mid, comp);
 }
 
 template <class Iter>
@@ -95,9 +104,10 @@ inline void floyd_rivest_partial_sort(Iter begin, Iter mid, Iter end) {
 template <class Iter, class Compare>
 inline void floyd_rivest_select(Iter begin, Iter mid, Iter end, Compare comp) {
   if (mid == end) return;
+  using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
 
   floyd_rivest_detail::floyd_rivest_select_loop<
-      Iter, Compare, typename std::iterator_traits<Iter>::difference_type>(
+      Iter, CompType, typename std::iterator_traits<Iter>::difference_type>(
       begin, 0, end - begin - 1, mid - begin, comp);
 }
 

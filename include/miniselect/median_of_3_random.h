@@ -17,7 +17,7 @@ namespace miniselect {
 namespace median_of_3_random_detail {
 
 template <class Iter, class Compare>
-static inline Iter partition(Iter r, Iter end, Compare comp) {
+static inline Iter partition(Iter r, Iter end, Compare&& comp) {
   typedef typename std::iterator_traits<Iter>::difference_type T;
   const T len = end - r;
   assert(len >= 3);
@@ -36,9 +36,10 @@ template <class Iter, class Compare>
 inline void median_of_3_random_select(Iter begin, Iter mid, Iter end,
                                       Compare comp) {
   if (mid == end) return;
+  using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
 
   median_common_detail::quickselect<
-      Iter, Compare, &median_of_3_random_detail::partition<Iter, Compare>>(
+      Iter, CompType, &median_of_3_random_detail::partition<Iter, CompType>>(
       begin, mid, end, comp);
 }
 
@@ -52,10 +53,11 @@ template <class Iter, class Compare>
 inline void median_of_3_random_sort(Iter begin, Iter mid, Iter end,
                                     Compare comp) {
   if (begin == mid) return;
+  using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
   median_common_detail::quickselect<
-      Iter, Compare, &median_of_3_random_detail::partition<Iter, Compare>>(
+      Iter, CompType, &median_of_3_random_detail::partition<Iter, CompType>>(
       begin, mid - 1, end, comp);
-  std::sort(begin, mid, comp);
+  std::sort<Iter, CompType>(begin, mid, comp);
 }
 
 template <class Iter>

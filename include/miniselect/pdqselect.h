@@ -47,6 +47,14 @@
 
 namespace miniselect {
 namespace pdqsort_detail {
+
+template <class Compare>
+struct CompareRefType {
+  // Pass the comparator by lvalue reference. Or in debug mode, using a
+  // debugging wrapper that stores a reference.
+  using type = typename std::add_lvalue_reference<Compare>::type;
+};
+
 enum {
   // Partitions below this size are sorted using insertion sort.
   insertion_sort_threshold = 24,
@@ -87,7 +95,7 @@ inline int log2(T n) {
 
 // Sorts [begin, end) using insertion sort with the given comparison function.
 template <class Iter, class Compare>
-inline void insertion_sort(Iter begin, Iter end, Compare comp) {
+inline void insertion_sort(Iter begin, Iter end, Compare& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
   if (begin == end) return;
 
@@ -114,7 +122,7 @@ inline void insertion_sort(Iter begin, Iter end, Compare comp) {
 // *(begin - 1) is an element smaller than or equal to any element in [begin,
 // end).
 template <class Iter, class Compare>
-inline void unguarded_insertion_sort(Iter begin, Iter end, Compare comp) {
+inline void unguarded_insertion_sort(Iter begin, Iter end, Compare& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
   if (begin == end) return;
 
@@ -140,7 +148,7 @@ inline void unguarded_insertion_sort(Iter begin, Iter end, Compare comp) {
 // than partial_insertion_sort_limit elements were moved, and abort sorting.
 // Otherwise it will successfully sort and return true.
 template <class Iter, class Compare>
-inline bool partial_insertion_sort(Iter begin, Iter end, Compare comp) {
+inline bool partial_insertion_sort(Iter begin, Iter end, Compare& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
   if (begin == end) return true;
 
@@ -169,13 +177,13 @@ inline bool partial_insertion_sort(Iter begin, Iter end, Compare comp) {
 }
 
 template <class Iter, class Compare>
-inline void sort2(Iter a, Iter b, Compare comp) {
+inline void sort2(Iter a, Iter b, Compare& comp) {
   if (comp(*b, *a)) std::iter_swap(a, b);
 }
 
 // Sorts the elements *a, *b and *c using comparison function comp.
 template <class Iter, class Compare>
-inline void sort3(Iter a, Iter b, Iter c, Compare comp) {
+inline void sort3(Iter a, Iter b, Iter c, Compare& comp) {
   sort2(a, b, comp);
   sort2(b, c, comp);
   sort2(a, b, comp);
@@ -225,7 +233,7 @@ inline void swap_offsets(Iter first, Iter last, unsigned char* offsets_l,
 // Uses branchless partitioning.
 template <class Iter, class Compare>
 inline std::pair<Iter, bool> partition_right_branchless(Iter begin, Iter end,
-                                                        Compare comp) {
+                                                        Compare& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
 
   // Move pivot into local for speed.
@@ -405,7 +413,7 @@ inline std::pair<Iter, bool> partition_right_branchless(Iter begin, Iter end,
 // 3 elements and that [begin, end) is at least insertion_sort_threshold long.
 template <class Iter, class Compare>
 inline std::pair<Iter, bool> partition_right(Iter begin, Iter end,
-                                             Compare comp) {
+                                             Compare& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
 
   // Move pivot into local for speed.
@@ -457,7 +465,7 @@ inline std::pair<Iter, bool> partition_right(Iter begin, Iter end,
 // case), and in that case pdqsort already has O(n) performance, no block
 // quicksort is applied here for simplicity.
 template <class Iter, class Compare>
-inline Iter partition_left(Iter begin, Iter end, Compare comp) {
+inline Iter partition_left(Iter begin, Iter end, Compare& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
 
   T pivot(PDQSORT_PREFER_MOVE(*begin));
@@ -490,9 +498,10 @@ inline Iter partition_left(Iter begin, Iter end, Compare comp) {
 }
 
 template <class Iter, class Compare, bool Branchless>
-inline void pdqsort_loop(Iter begin, Iter end, Compare comp, int bad_allowed,
+inline void pdqsort_loop(Iter begin, Iter end, Compare& comp, int bad_allowed,
                          bool leftmost = true) {
   typedef typename std::iterator_traits<Iter>::difference_type diff_t;
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
   // Use a while loop for tail recursion elimination.
   while (true) {
@@ -547,8 +556,8 @@ inline void pdqsort_loop(Iter begin, Iter end, Compare comp, int bad_allowed,
       // If we had too many bad partitions, switch to heapsort to guarantee O(n
       // log n).
       if (--bad_allowed == 0) {
-        std::make_heap(begin, end, comp);
-        std::sort_heap(begin, end, comp);
+        std::make_heap<Iter, CompType>(begin, end, comp);
+        std::sort_heap<Iter, CompType>(begin, end, comp);
         return;
       }
 
@@ -594,10 +603,10 @@ inline void pdqsort_loop(Iter begin, Iter end, Compare comp, int bad_allowed,
 }
 
 template <class Iter, class Compare, bool Branchless>
-inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare comp,
+inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare& comp,
                                  int bad_allowed, bool leftmost = true) {
   typedef typename std::iterator_traits<Iter>::difference_type diff_t;
-
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
   // Use a while loop for tail recursion elimination.
   while (true) {
     diff_t size = end - begin;
@@ -651,8 +660,8 @@ inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare comp,
       // If we had too many bad partitions, switch to heapsort to guarantee O(n
       // log n).
       if (--bad_allowed == 0) {
-        std::make_heap(begin, end, comp);
-        std::sort_heap(begin, end, comp);
+        std::make_heap<Iter, CompType>(begin, end, comp);
+        std::sort_heap<Iter, CompType>(begin, end, comp);
         return;
       }
 
@@ -702,9 +711,10 @@ inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare comp,
 }
 
 template <class Iter, class Compare, bool Branchless>
-inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare comp,
+inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare& comp,
                            int bad_allowed, bool leftmost = true) {
   typedef typename std::iterator_traits<Iter>::difference_type diff_t;
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
   // Use a while loop for tail recursion elimination.
   while (true) {
@@ -759,7 +769,7 @@ inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare comp,
       // If we had too many bad partitions, switch to heapsort to guarantee O(n
       // log n).
       if (--bad_allowed == 0) {
-        std::nth_element(begin, mid, end, comp);
+        std::nth_element<Iter, CompType>(begin, mid, end, comp);
         return;
       }
 
@@ -884,10 +894,11 @@ inline void pdqpartial_sort_branchless(Iter begin, Iter mid, Iter end) {
 template <class Iter, class Compare>
 inline void pdqselect(Iter begin, Iter mid, Iter end, Compare comp) {
   if (mid == end) return;
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
 #if __cplusplus >= 201103L
   pdqsort_detail::pdqselect_loop<
-      Iter, Compare,
+      Iter, CompType,
       pdqsort_detail::is_default_compare<
           typename std::decay<Compare>::type>::value &&
           std::is_arithmetic<
@@ -908,7 +919,8 @@ inline void pdqselect(Iter begin, Iter mid, Iter end) {
 template <class Iter, class Compare>
 inline void pdqselect_branchless(Iter begin, Iter mid, Iter end, Compare comp) {
   if (mid == end) return;
-  pdqsort_detail::pdqselect_loop<Iter, Compare, true>(
+  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
+  pdqsort_detail::pdqselect_loop<Iter, CompType, true>(
       begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 }
 

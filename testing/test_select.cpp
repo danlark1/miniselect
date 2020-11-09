@@ -20,10 +20,15 @@ namespace miniselect {
 namespace {
 
 struct IndirectLess {
+  // Non const comparator with deleted copy.
   template <class P>
-  bool operator()(const P &x, const P &y) const {
+  bool operator()(const P &x, const P &y) {
     return *x < *y;
   }
+  IndirectLess(const IndirectLess &) = delete;
+  IndirectLess &operator=(const IndirectLess &) = delete;
+  IndirectLess(IndirectLess &&) = default;
+  IndirectLess &operator=(IndirectLess &&) = default;
 };
 
 template <typename Selector>
@@ -95,7 +100,7 @@ class SelectTest : public ::testing::Test {
       v[i] = std::make_unique<int>(i);
     }
     Selector::Select(v.begin(), v.begin() + v.size() / 2, v.end(),
-                     IndirectLess());
+                     IndirectLess{});
     EXPECT_EQ(*v[v.size() / 2], v.size() / 2);
     for (size_t i = 0; i < v.size() / 2; ++i) {
       ASSERT_NE(v[i], nullptr);
