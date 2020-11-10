@@ -76,14 +76,14 @@ Simply do in the root directory:
 $ git clone https://github.com/google/benchmark.git
 $ git clone https://github.com/google/googletest.git
 $ mkdir build && cd build
-$ cmake -DMINISELECT_TESTING=on ..
+$ cmake -DMINISELECT_TESTING=on -DBENCHMARK_ENABLE_GTEST_TESTS=off -DBENCHMARK_ENABLE_TESTING=off ..
 $ make -j
 $ ctest -j4 --output-on-failure
 ```
 
 It will create two tests and two benchmarks `test_sort`, `test_select`,
 `benchmark_sort`, `benchmark_select`. Use them to validate or contribute. You
-can also use `ctest`
+can also use `ctest`.
 
 Documentation
 -------------
