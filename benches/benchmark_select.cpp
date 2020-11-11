@@ -18,7 +18,7 @@
 namespace miniselect {
 namespace {
 
-static constexpr size_t kSize = 65536;
+static constexpr size_t kSize = 1000 * 1000 * 10;
 
 template <class DataGen, class Impl>
 static void BM_sel(benchmark::State& state) {
@@ -38,7 +38,24 @@ static void BM_sel(benchmark::State& state) {
   state.counters["Comparisons"] = 1.0 * cmp / cnt;
 }
 
+template <class DataGen, class Impl>
+static void BM_sel_accesses(benchmark::State& state) {
+  auto vec = DataGen::Gen(kSize);
+  const size_t arg = state.range(0);
+  size_t cnt = 0;
+  size_t cmp = 0;
+  miniselect::datagens::CountingIterator begin_v(&vec, 0, &cmp);
+  miniselect::datagens::CountingIterator end_v(&vec, vec.size(), &cmp);
+  for (auto _ : state) {
+    Impl::Select(begin_v, begin_v + arg, end_v);
+    ++cnt;
+    benchmark::DoNotOptimize(vec[arg]);
+  }
+  state.counters["Array Accesses"] = 1.0 * cmp / cnt;
+}
+
 BENCH(BM_sel);
+BENCH(BM_sel_accesses);
 
 }  // namespace
 }  // namespace miniselect
