@@ -14,8 +14,7 @@ namespace datagens {
 
 struct Random {
   static std::vector<uint32_t> Gen(size_t size) {
-    std::random_device rnd_device;
-    std::mt19937_64 mersenne_engine{rnd_device()};
+    std::mt19937_64 mersenne_engine{1};
     std::vector<uint32_t> v;
     v.reserve(size);
     for (size_t i = 0; i < size; ++i) {
@@ -28,8 +27,7 @@ struct Random {
 
 struct Shuffled16 {
   static std::vector<uint32_t> Gen(size_t size) {
-    std::random_device rnd_device;
-    std::mt19937_64 mersenne_engine{rnd_device()};
+    std::mt19937_64 mersenne_engine{1};
     std::vector<uint32_t> v;
     v.reserve(size);
     for (size_t i = 0; i < size; ++i) {
@@ -42,8 +40,7 @@ struct Shuffled16 {
 
 struct Random01 {
   static std::vector<uint32_t> Gen(size_t size) {
-    std::random_device rnd_device;
-    std::mt19937_64 mersenne_engine{rnd_device()};
+    std::mt19937_64 mersenne_engine{1};
     std::vector<uint32_t> v;
     v.reserve(size);
     for (size_t i = 0; i < size; ++i) {
@@ -133,6 +130,121 @@ struct Median3Killer {
     }
     return v;
   }
+};
+
+template <class U>
+class CountingIterator {
+ public:
+  using base_type = typename U::iterator;
+
+  using iterator_category = std::random_access_iterator_tag;
+  using value_type = typename std::iterator_traits<base_type>::value_type;
+  using difference_type =
+      typename std::iterator_traits<base_type>::difference_type;
+  using reference = typename std::iterator_traits<base_type>::reference;
+  using pointer = typename std::iterator_traits<base_type>::pointer;
+
+  CountingIterator(U* array, size_t pos, size_t* access_count)
+      : array_(array), pos_(pos), access_count_(access_count) {}
+
+  CountingIterator(const CountingIterator& r)
+      : array_(r.array_), pos_(r.pos_), access_count_(r.access_count_) {}
+
+  CountingIterator& operator=(const CountingIterator& r) {
+    array_ = r.array_, pos_ = r.pos_;
+    access_count_ = r.access_count_;
+    return *this;
+  }
+
+  CountingIterator& operator++() {
+    ++pos_;
+    return *this;
+  }
+
+  CountingIterator& operator--() {
+    --pos_;
+    return *this;
+  }
+
+  CountingIterator operator++(int) {
+    return CountingIterator(array_, pos_++, access_count_);
+  }
+
+  CountingIterator operator--(int) {
+    return CountingIterator(array_, pos_--, access_count_);
+  }
+
+  CountingIterator operator+(difference_type n) const {
+    return CountingIterator(array_, pos_ + n, access_count_);
+  }
+
+  CountingIterator& operator+=(difference_type n) {
+    pos_ += n;
+    return *this;
+  }
+
+  CountingIterator operator-(difference_type n) const {
+    return CountingIterator(array_, pos_ - n, access_count_);
+  }
+
+  CountingIterator& operator-=(difference_type n) {
+    pos_ -= n;
+    return *this;
+  }
+
+  reference operator*() const {
+    ++(*access_count_);
+    return (*array_)[pos_];
+  }
+
+  pointer operator->() const {
+    ++(*access_count_);
+    return &(*array_)[pos_];
+  }
+
+  reference operator[](difference_type n) const {
+    ++(*access_count_);
+    return (*array_)[pos_ + n];
+  }
+
+  bool operator==(const CountingIterator& r) {
+    return (array_ == r.array_) && (pos_ == r.pos_);
+  }
+
+  bool operator!=(const CountingIterator& r) {
+    return (array_ != r.array_) || (pos_ != r.pos_);
+  }
+
+  bool operator<(const CountingIterator& r) {
+    return (array_ == r.array_ ? (pos_ < r.pos_) : (array_ < r.array_));
+  }
+
+  bool operator>(const CountingIterator& r) {
+    return (array_ == r.array_ ? (pos_ > r.pos_) : (array_ > r.array_));
+  }
+
+  bool operator<=(const CountingIterator& r) {
+    return (array_ == r.array_ ? (pos_ <= r.pos_) : (array_ <= r.array_));
+  }
+
+  bool operator>=(const CountingIterator& r) {
+    return (array_ == r.array_ ? (pos_ >= r.pos_) : (array_ >= r.array_));
+  }
+
+  difference_type operator+(const CountingIterator& r2) const {
+    assert(array_ == r2.array_);
+    return (pos_ + r2.pos_);
+  }
+
+  difference_type operator-(const CountingIterator& r2) const {
+    assert(array_ == r2.array_);
+    return (pos_ - r2.pos_);
+  }
+
+ private:
+  U* array_;
+  size_t pos_;
+  size_t* access_count_;
 };
 
 #define BENCH_IMPL(BENCH, GEN, IMPL)   \

@@ -211,6 +211,8 @@ for median the benchmarks are the following:
 
 ![median](benches/plots/result_comparisons_10000000_5000000.png)
 
+![median](benches/plots/result_accesses_10000000_5000000.png)
+
 For smaller ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k),
 for example, 1000, the results are the following
 
@@ -218,9 +220,10 @@ for example, 1000, the results are the following
 
 ![k equals 1000](benches/plots/result_comparisons_10000000_1000.png)
 
+![k equals 1000](benches/plots/result_accesses_10000000_1000.png)
+
 Other benchmarks can be found [here](https://drive.google.com/drive/folders/1DHEaeXgZuX6AJ9eByeZ8iQVQv0ueP8XM).
 
-The benchmarks for number of swaps will be later.
 
 Real-world usage
 ----------------
