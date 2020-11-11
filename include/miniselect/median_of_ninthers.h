@@ -37,7 +37,7 @@ size_t medianOfMinima(Iter const r, const size_t n, const size_t length,
   const size_t subset = n * 2, computeMinOver = (length - subset) / subset;
   assert(computeMinOver > 0);
   for (size_t i = 0, j = subset; i < subset; ++i) {
-    const auto limit = j + computeMinOver;
+    const size_t limit = j + computeMinOver;
     size_t minIndex = j;
     while (++j < limit)
       if (comp(r[j], r[minIndex])) minIndex = j;
@@ -61,7 +61,7 @@ size_t medianOfMaxima(Iter const r, const size_t n, const size_t length,
   assert(computeMaxOver > 0);
   for (size_t i = subsetStart, j = i - subset * computeMaxOver; i < length;
        ++i) {
-    const auto limit = j + computeMaxOver;
+    const size_t limit = j + computeMaxOver;
     size_t maxIndex = j;
     while (++j < limit)
       if (comp(r[maxIndex], r[j])) maxIndex = j;
@@ -80,16 +80,16 @@ pivot that approximates the median. Returns the position of the pivot.
 template <class Iter, class Compare>
 size_t medianOfNinthers(Iter const r, const size_t length, Compare&& comp) {
   assert(length >= 12);
-  const auto frac = length <= 1024
+  const size_t frac = length <= 1024
                         ? length / 12
                         : length <= 128 * 1024 ? length / 64 : length / 1024;
-  auto pivot = frac / 2;
-  const auto lo = length / 2 - pivot, hi = lo + frac;
+  size_t pivot = frac / 2;
+  const size_t lo = length / 2 - pivot, hi = lo + frac;
   assert(lo >= frac * 4);
   assert(length - hi >= frac * 4);
   assert(lo / 2 >= pivot);
-  const auto gap = (length - 9 * frac) / 4;
-  auto a = lo - 4 * frac - gap, b = hi + gap;
+  const size_t gap = (length - 9 * frac) / 4;
+  size_t a = lo - 4 * frac - gap, b = hi + gap;
   for (size_t i = lo; i < hi; ++i, a += 3, b += 3) {
     median_common_detail::ninther(r, a, i - frac, b, a + 1, i, b + 1, a + 2,
                                   i + frac, b + 2, comp);
@@ -112,7 +112,7 @@ void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare&& comp) {
     // Decide strategy for partitioning
     if (n == 0) {
       // That would be the max
-      auto pivot = n;
+      size_t pivot = n;
       for (++n; n < length; ++n)
         if (comp(r[n], r[pivot])) pivot = n;
       std::swap(r[0], r[pivot]);
@@ -120,7 +120,7 @@ void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare&& comp) {
     }
     if (n + 1 == length) {
       // That would be the min
-      auto pivot = 0;
+      size_t pivot = 0;
       for (n = 1; n < length; ++n)
         if (comp(r[pivot], r[n])) pivot = n;
       std::swap(r[pivot], r[length - 1]);
