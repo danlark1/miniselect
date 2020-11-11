@@ -131,12 +131,12 @@ struct MedianOfNinthers {
 struct MedianOfMedians {
   template <class Iter, class Compare>
   static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
-    median_of_medians_sort(begin, mid, end, std::move(comp));
+    median_of_medians_partial_sort(begin, mid, end, std::move(comp));
   }
 
   template <class Iter>
   static void Sort(Iter begin, Iter mid, Iter end) {
-    median_of_medians_sort(begin, mid, end);
+    median_of_medians_partial_sort(begin, mid, end);
   }
 
   template <class Iter, class Compare>
