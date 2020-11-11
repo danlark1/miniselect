@@ -51,7 +51,7 @@ inline void median_of_3_random_select(Iter begin, Iter mid, Iter end) {
 
 template <class Iter, class Compare>
 inline void median_of_3_random_partial_sort(Iter begin, Iter mid, Iter end,
-                                    Compare comp) {
+                                            Compare comp) {
   if (begin == mid) return;
   using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
   median_common_detail::quickselect<

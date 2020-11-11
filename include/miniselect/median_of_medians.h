@@ -52,8 +52,8 @@ inline void median_of_medians_select(Iter begin, Iter mid, Iter end) {
 }
 
 template <class Iter, class Compare>
-inline void median_of_medians_sort(Iter begin, Iter mid, Iter end,
-                                   Compare comp) {
+inline void median_of_medians_partial_sort(Iter begin, Iter mid, Iter end,
+                                           Compare comp) {
   if (begin == mid) return;
   using CompType = typename median_common_detail::CompareRefType<Compare>::type;
   median_common_detail::quickselect<
@@ -63,9 +63,9 @@ inline void median_of_medians_sort(Iter begin, Iter mid, Iter end,
 }
 
 template <class Iter>
-inline void median_of_medians_sort(Iter begin, Iter mid, Iter end) {
+inline void median_of_medians_partial_sort(Iter begin, Iter mid, Iter end) {
   typedef typename std::iterator_traits<Iter>::value_type T;
-  median_of_medians_sort(begin, mid, end, std::less<T>());
+  median_of_medians_partial_sort(begin, mid, end, std::less<T>());
 }
 
 }  // namespace miniselect

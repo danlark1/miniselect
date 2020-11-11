@@ -172,7 +172,7 @@ inline void median_of_ninthers_select(Iter begin, Iter mid, Iter end) {
 
 template <class Iter, class Compare>
 inline void median_of_ninthers_partial_sort(Iter begin, Iter mid, Iter end,
-                                    Compare comp) {
+                                            Compare comp) {
   if (begin == mid) return;
   using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
