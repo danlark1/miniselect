@@ -16,6 +16,10 @@
 namespace miniselect {
 namespace floyd_rivest_detail {
 
+enum floyd_rivest_constants {
+  kQCap = 600,
+};
+
 template <class Compare>
 struct CompareRefType {
   // Pass the comparator by lvalue reference. Or in debug mode, using a
@@ -23,27 +27,30 @@ struct CompareRefType {
   using type = typename std::add_lvalue_reference<Compare>::type;
 };
 
-template <class Iter, class Compare, class Diff>
-inline void floyd_rivest_select_loop(Iter begin, Diff left, Diff right, Diff k,
-                                     Compare comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline void floyd_rivest_select_loop(Iter begin, DiffType left, DiffType right,
+                                     DiffType k, Compare comp) {
   while (right > left) {
-    Diff size = right - left;
-    if (size > 600) {
-      Diff n = right - left + 1;
-      Diff i = k - left + 1;
+    DiffType size = right - left;
+    if (size > floyd_rivest_constants::kQCap) {
+      DiffType n = right - left + 1;
+      DiffType i = k - left + 1;
       double z = log(n);
       double s = 0.5 * exp(2 * z / 3);
       double sd = 0.5 * sqrt(z * s * (n - s) / n);
       if (i < n / 2) {
         sd *= -1.0;
       }
-      Diff newLeft = std::max(left, (Diff)(k - i * s / n + sd));
-      Diff newRight = std::min(right, (Diff)(k + (n - i) * s / n + sd));
-      floyd_rivest_select_loop<Iter, Compare, Diff>(begin, newLeft, newRight, k,
-                                                    comp);
+      DiffType newLeft =
+          std::max(left, static_cast<DiffType>(k - i * s / n + sd));
+      DiffType newRight =
+          std::min(right, static_cast<DiffType>(k + (n - i) * s / n + sd));
+      floyd_rivest_select_loop<Iter, Compare, DiffType>(begin, newLeft,
+                                                        newRight, k, comp);
     }
-    Diff i = left;
-    Diff j = right;
+    DiffType i = left;
+    DiffType j = right;
     std::swap(begin[left], begin[k]);
     const bool to_swap = comp(begin[left], begin[right]);
     if (to_swap) {
@@ -87,10 +94,9 @@ inline void floyd_rivest_partial_sort(Iter begin, Iter mid, Iter end,
   if (begin == end) return;
   if (begin == mid) return;
   using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
-
-  floyd_rivest_detail::floyd_rivest_select_loop<
-      Iter, CompType, typename std::iterator_traits<Iter>::difference_type>(
-      begin, 0, end - begin - 1, mid - begin - 1, comp);
+  using DiffType = typename std::iterator_traits<Iter>::difference_type;
+  floyd_rivest_detail::floyd_rivest_select_loop<Iter, CompType>(
+      begin, DiffType{0}, end - begin - 1, mid - begin - 1, comp);
   // std::sort proved to be better than other sorts because of pivoting.
   std::sort<Iter, CompType>(begin, mid, comp);
 }
@@ -105,10 +111,9 @@ template <class Iter, class Compare>
 inline void floyd_rivest_select(Iter begin, Iter mid, Iter end, Compare comp) {
   if (mid == end) return;
   using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
-
-  floyd_rivest_detail::floyd_rivest_select_loop<
-      Iter, CompType, typename std::iterator_traits<Iter>::difference_type>(
-      begin, 0, end - begin - 1, mid - begin, comp);
+  using DiffType = typename std::iterator_traits<Iter>::difference_type;
+  floyd_rivest_detail::floyd_rivest_select_loop<Iter, CompType>(
+      begin, DiffType{0}, end - begin - 1, mid - begin, comp);
 }
 
 template <class Iter>

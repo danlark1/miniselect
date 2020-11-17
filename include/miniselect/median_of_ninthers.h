@@ -22,97 +22,104 @@
 namespace miniselect {
 namespace median_of_ninthers_detail {
 
-template <class Iter, class Compare>
-void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare&& comp);
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+void adaptive_quickselect(Iter r, DiffType n, DiffType length, Compare&& comp);
 
 /**
 Median of minima
 */
-template <class Iter, class Compare>
-size_t medianOfMinima(Iter const r, const size_t n, const size_t length,
-                      Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType median_of_minima(Iter const r, const DiffType n,
+                                 const DiffType length, Compare&& comp) {
   assert(length >= 2);
   assert(n * 4 <= length);
   assert(n > 0);
-  const size_t subset = n * 2, computeMinOver = (length - subset) / subset;
+  const DiffType subset = n * 2, computeMinOver = (length - subset) / subset;
   assert(computeMinOver > 0);
-  for (size_t i = 0, j = subset; i < subset; ++i) {
-    const size_t limit = j + computeMinOver;
-    size_t minIndex = j;
+  for (DiffType i = 0, j = subset; i < subset; ++i) {
+    const DiffType limit = j + computeMinOver;
+    DiffType minIndex = j;
     while (++j < limit)
       if (comp(r[j], r[minIndex])) minIndex = j;
     if (comp(r[minIndex], r[i])) std::swap(r[i], r[minIndex]);
     assert(j < length || i + 1 == subset);
   }
-  adaptiveQuickselect(r, n, subset, comp);
-  return median_common_detail::expandPartition(r, 0, n, subset, length, comp);
+  adaptive_quickselect(r, n, subset, comp);
+  return median_common_detail::expand_partition(r, DiffType{0}, n, subset,
+                                                length, comp);
 }
 
 /**
 Median of maxima
 */
-template <class Iter, class Compare>
-size_t medianOfMaxima(Iter const r, const size_t n, const size_t length,
-                      Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType median_of_maxima(Iter const r, const DiffType n,
+                                 const DiffType length, Compare&& comp) {
   assert(length >= 2);
   assert(n * 4 >= length * 3 && n < length);
-  const size_t subset = (length - n) * 2, subsetStart = length - subset,
-               computeMaxOver = subsetStart / subset;
+  const DiffType subset = (length - n) * 2, subsetStart = length - subset,
+                 computeMaxOver = subsetStart / subset;
   assert(computeMaxOver > 0);
-  for (size_t i = subsetStart, j = i - subset * computeMaxOver; i < length;
+  for (DiffType i = subsetStart, j = i - subset * computeMaxOver; i < length;
        ++i) {
-    const size_t limit = j + computeMaxOver;
-    size_t maxIndex = j;
+    const DiffType limit = j + computeMaxOver;
+    DiffType maxIndex = j;
     while (++j < limit)
       if (comp(r[maxIndex], r[j])) maxIndex = j;
     if (comp(r[i], r[maxIndex])) std::swap(r[i], r[maxIndex]);
     assert(j != 0 || i + 1 == length);
   }
-  adaptiveQuickselect(r + subsetStart, length - n, subset, comp);
-  return median_common_detail::expandPartition(r, subsetStart, n, length,
-                                               length, comp);
+  adaptive_quickselect(r + subsetStart, length - n, subset, comp);
+  return median_common_detail::expand_partition(r, subsetStart, n, length,
+                                                length, comp);
 }
 
 /**
 Partitions r[0 .. length] using a pivot of its own choosing. Attempts to pick a
 pivot that approximates the median. Returns the position of the pivot.
 */
-template <class Iter, class Compare>
-size_t medianOfNinthers(Iter const r, const size_t length, Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType median_of_ninthers(Iter const r, const DiffType length,
+                                   Compare&& comp) {
   assert(length >= 12);
-  const size_t frac = length <= 1024
-                        ? length / 12
-                        : length <= 128 * 1024 ? length / 64 : length / 1024;
-  size_t pivot = frac / 2;
-  const size_t lo = length / 2 - pivot, hi = lo + frac;
+  const DiffType frac =
+      length <= 1024 ? length / 12
+                     : length <= 128 * 1024 ? length / 64 : length / 1024;
+  DiffType pivot = frac / 2;
+  const DiffType lo = length / 2 - pivot, hi = lo + frac;
   assert(lo >= frac * 4);
   assert(length - hi >= frac * 4);
   assert(lo / 2 >= pivot);
-  const size_t gap = (length - 9 * frac) / 4;
-  size_t a = lo - 4 * frac - gap, b = hi + gap;
-  for (size_t i = lo; i < hi; ++i, a += 3, b += 3) {
+  const DiffType gap = (length - 9 * frac) / 4;
+  DiffType a = lo - 4 * frac - gap, b = hi + gap;
+  for (DiffType i = lo; i < hi; ++i, a += 3, b += 3) {
     median_common_detail::ninther(r, a, i - frac, b, a + 1, i, b + 1, a + 2,
                                   i + frac, b + 2, comp);
   }
 
-  adaptiveQuickselect(r + lo, pivot, frac, comp);
-  return median_common_detail::expandPartition(r, lo, lo + pivot, hi, length,
-                                               comp);
+  adaptive_quickselect(r + lo, pivot, frac, comp);
+  return median_common_detail::expand_partition(r, lo, lo + pivot, hi, length,
+                                                comp);
 }
 
 /**
-Quickselect driver for medianOfNinthers, medianOfMinima, and medianOfMaxima.
-Dispathes to each depending on the relationship between n (the sought order
-statistics) and length.
+Quickselect driver for median_of_ninthers, median_of_minima, and
+median_of_maxima. Dispathes to each depending on the relationship between n (the
+sought order statistics) and length.
 */
-template <class Iter, class Compare>
-void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare&& comp) {
+template <class Iter, class Compare, class DiffType>
+inline void adaptive_quickselect(Iter r, DiffType n, DiffType length,
+                                 Compare&& comp) {
   assert(n < length);
   for (;;) {
     // Decide strategy for partitioning
     if (n == 0) {
       // That would be the max
-      size_t pivot = n;
+      DiffType pivot = n;
       for (++n; n < length; ++n)
         if (comp(r[n], r[pivot])) pivot = n;
       std::swap(r[0], r[pivot]);
@@ -120,22 +127,22 @@ void adaptiveQuickselect(Iter r, size_t n, size_t length, Compare&& comp) {
     }
     if (n + 1 == length) {
       // That would be the min
-      size_t pivot = 0;
+      DiffType pivot = 0;
       for (n = 1; n < length; ++n)
         if (comp(r[pivot], r[n])) pivot = n;
       std::swap(r[pivot], r[length - 1]);
       return;
     }
     assert(n < length);
-    size_t pivot;
+    DiffType pivot;
     if (length <= 16)
-      pivot = median_common_detail::pivotPartition(r, n, length, comp) - r;
+      pivot = median_common_detail::pivot_partition(r, n, length, comp) - r;
     else if (n * 6 <= length)
-      pivot = medianOfMinima(r, n, length, comp);
+      pivot = median_of_minima(r, n, length, comp);
     else if (n * 6 >= length * 5)
-      pivot = medianOfMaxima(r, n, length, comp);
+      pivot = median_of_maxima(r, n, length, comp);
     else
-      pivot = medianOfNinthers(r, length, comp);
+      pivot = median_of_ninthers(r, length, comp);
 
     // See how the pivot fares
     if (pivot == n) {
@@ -160,13 +167,13 @@ inline void median_of_ninthers_select(Iter begin, Iter mid, Iter end,
   if (mid == end) return;
   using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
-  median_of_ninthers_detail::adaptiveQuickselect<Iter, CompType>(
+  median_of_ninthers_detail::adaptive_quickselect<Iter, CompType>(
       begin, mid - begin, end - begin, comp);
 }
 
 template <class Iter>
 inline void median_of_ninthers_select(Iter begin, Iter mid, Iter end) {
-  typedef typename std::iterator_traits<Iter>::value_type T;
+  using T = typename std::iterator_traits<Iter>::value_type;
   median_of_ninthers_select(begin, mid, end, std::less<T>());
 }
 
@@ -176,7 +183,7 @@ inline void median_of_ninthers_partial_sort(Iter begin, Iter mid, Iter end,
   if (begin == mid) return;
   using CompType = typename median_common_detail::CompareRefType<Compare>::type;
 
-  median_of_ninthers_detail::adaptiveQuickselect<Iter, CompType>(
+  median_of_ninthers_detail::adaptive_quickselect<Iter, CompType>(
       begin, mid - begin - 1, end - begin, comp);
   std::sort<Iter, CompType>(begin, mid, comp);
 }

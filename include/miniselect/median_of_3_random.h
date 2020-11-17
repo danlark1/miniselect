@@ -17,17 +17,17 @@ namespace miniselect {
 namespace median_of_3_random_detail {
 
 template <class Iter, class Compare>
-static inline Iter partition(Iter r, Iter end, Compare&& comp) {
-  typedef typename std::iterator_traits<Iter>::difference_type T;
-  const T len = end - r;
+inline Iter partition(Iter r, Iter end, Compare&& comp) {
+  using DiffType = typename std::iterator_traits<Iter>::difference_type;
+  const DiffType len = end - r;
   assert(len >= 3);
   static std::mt19937_64 gen(1);
-  std::uniform_int_distribution<T> dis(0, len - 1);
-  T x = dis(gen);
-  T y = dis(gen);
-  T z = dis(gen);
-  return median_common_detail::pivotPartition(
-      r, median_common_detail::medianIndex(r, x, y, z, comp), len, comp);
+  std::uniform_int_distribution<DiffType> dis(0, len - 1);
+  DiffType x = dis(gen);
+  DiffType y = dis(gen);
+  DiffType z = dis(gen);
+  return median_common_detail::pivot_partition(
+      r, median_common_detail::median_index(r, x, y, z, comp), len, comp);
 }
 
 }  // namespace median_of_3_random_detail
