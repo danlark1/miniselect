@@ -11,6 +11,7 @@
 #pragma once
 
 #include <cassert>
+#include <iterator>
 #include <type_traits>
 #include <utility>
 
@@ -26,8 +27,10 @@ struct CompareRefType {
 /**
 Swaps the median of r[a], r[b], and r[c] into r[b].
 */
-template <class Iter, class Compare>
-void median3(Iter r, size_t a, size_t b, size_t c, Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline void median3(Iter r, DiffType a, DiffType b, DiffType c,
+                    Compare&& comp) {
   if (comp(r[b], r[a]))  // b < a
   {
     if (comp(r[b], r[c]))  // b < a, b < c
@@ -49,8 +52,9 @@ void median3(Iter r, size_t a, size_t b, size_t c, Compare&& comp) {
 /**
 Sorts in place r[a], r[b], and r[c].
 */
-template <class Iter, class Compare>
-void sort3(Iter r, size_t a, size_t b, size_t c, Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline void sort3(Iter r, DiffType a, DiffType b, DiffType c, Compare&& comp) {
   typedef typename std::iterator_traits<Iter>::value_type T;
   if (comp(r[b], r[a]))  // b < a
   {
@@ -92,9 +96,10 @@ If leanRight == false, swaps the lower median of r[a]...r[d] into r[b] and
 the minimum into r[a]. If leanRight == true, swaps the upper median of
 r[a]...r[d] into r[c] and the minimum into r[d].
 */
-template <bool leanRight, class Iter, class Compare>
-void partition4(Iter r, size_t a, size_t b, size_t c, size_t d,
-                Compare&& comp) {
+template <bool leanRight, class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline void partition4(Iter r, DiffType a, DiffType b, DiffType c, DiffType d,
+                       Compare&& comp) {
   assert(a != b && a != c && a != d && b != c && b != d && c != d);
   /* static */ if (leanRight) {
     // In the median of 5 algorithm, consider r[e] infinite
@@ -137,9 +142,10 @@ void partition4(Iter r, size_t a, size_t b, size_t c, size_t d,
 Places the median of r[a]...r[e] in r[c] and partitions the other elements
 around it.
 */
-template <class Iter, class Compare>
-void partition5(Iter r, size_t a, size_t b, size_t c, size_t d, size_t e,
-                Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline void partition5(Iter r, DiffType a, DiffType b, DiffType c, DiffType d,
+                       DiffType e, Compare&& comp) {
   assert(a != b && a != c && a != d && a != e && b != c && b != d && b != e &&
          c != d && c != e && d != e);
   if (comp(r[c], r[a])) {
@@ -170,11 +176,13 @@ void partition5(Iter r, size_t a, size_t b, size_t c, size_t d, size_t e,
 /**
 Implements Hoare partition.
 */
-template <class Iter, class Compare>
-Iter pivotPartition(Iter r, size_t k, size_t length, Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline Iter pivot_partition(Iter r, DiffType k, DiffType length,
+                            Compare&& comp) {
   assert(k < length);
   std::swap(*r, r[k]);
-  size_t lo = 1, hi = length - 1;
+  DiffType lo = 1, hi = length - 1;
   for (;; ++lo, --hi) {
     for (;; ++lo) {
       if (lo > hi) goto loop_done;
@@ -198,7 +206,7 @@ loop_done:
 Implements the quickselect algorithm, parameterized with a partition function.
 */
 template <class Iter, class Compare, Iter (*partition)(Iter, Iter, Compare)>
-void quickselect(Iter r, Iter mid, Iter end, Compare&& comp) {
+inline void quickselect(Iter r, Iter mid, Iter end, Compare&& comp) {
   if (r == end || mid >= end) return;
   assert(r <= mid && mid < end);
   for (;;) switch (end - r) {
@@ -258,8 +266,10 @@ void quickselect(Iter r, Iter mid, Iter end, Compare&& comp) {
 Returns the index of the median of r[a], r[b], and r[c] without writing
 anything.
 */
-template <class Iter, class Compare>
-size_t medianIndex(const Iter r, size_t a, size_t b, size_t c, Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType median_index(const Iter r, DiffType a, DiffType b, DiffType c,
+                             Compare&& comp) {
   if (r[a] > r[c]) std::swap(a, c);
   if (r[b] > r[c]) return c;
   if (comp(r[b], r[a])) return a;
@@ -271,22 +281,23 @@ Returns the index of the median of r[a], r[b], r[c], and r[d] without writing
 anything. If leanRight is true, computes the upper median. Otherwise, conputes
 the lower median.
 */
-template <bool leanRight, class Iter, class Compare>
-static size_t medianIndex(Iter r, size_t a, size_t b, size_t c, size_t d,
-                          Compare&& comp) {
+template <bool leanRight, class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType median_index(Iter r, DiffType a, DiffType b, DiffType c,
+                             DiffType d, Compare&& comp) {
   if (comp(r[d], r[c])) std::swap(c, d);
   assert(r[c] <= r[d]);
-  /* static */ if (leanRight) {
+  if (leanRight) {
     if (comp(r[c], r[a])) {
       assert(comp(r[c], r[a]) && !comp(r[d], r[c]));  // so r[c]) is out
-      return medianIndex(r, a, b, d, comp);
+      return median_index(r, a, b, d, comp);
     }
   } else {
     if (!comp(r[d], r[a])) {
-      return medianIndex(r, a, b, c, comp);
+      return median_index(r, a, b, c, comp);
     }
   }
-  // Could return medianIndex(r, b, c, d) but we already know r[c] <= r[d]
+  // Could return median_index(r, b, c, d) but we already know r[c] <= r[d]
   if (!comp(r[c], r[b])) return c;
   if (comp(r[d], r[b])) return d;
   return b;
@@ -297,11 +308,13 @@ Tukey's Ninther: compute the median of r[_1], r[_2], r[_3], then the median of
 r[_4], r[_5], r[_6], then the median of r[_7], r[_8], r[_9], and then swap the
 median of those three medians into r[_5].
 */
-template <class Iter, class Compare>
-void ninther(Iter r, size_t _1, size_t _2, size_t _3, size_t _4, size_t _5,
-             size_t _6, size_t _7, size_t _8, size_t _9, Compare&& comp) {
-  _2 = medianIndex(r, _1, _2, _3, comp);
-  _8 = medianIndex(r, _7, _8, _9, comp);
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline void ninther(Iter r, DiffType _1, DiffType _2, DiffType _3, DiffType _4,
+                    DiffType _5, DiffType _6, DiffType _7, DiffType _8,
+                    DiffType _9, Compare&& comp) {
+  _2 = median_index(r, _1, _2, _3, comp);
+  _8 = median_index(r, _7, _8, _9, comp);
   if (comp(r[_8], r[_2])) std::swap(_2, _8);
   if (comp(r[_6], r[_4])) std::swap(_4, _6);
   // Here we know that r[_2] and r[_8] are the other two medians and that
@@ -333,9 +346,11 @@ Input assumptions:
 Output guarantee: same as Hoare partition using r[0] as pivot. Returns the new
 position of the pivot.
 */
-template <class Iter, class Compare>
-size_t expandPartitionRight(Iter r, size_t hi, size_t rite, Compare&& comp) {
-  size_t pivot = 0;
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType expand_partition_right(Iter r, DiffType hi, DiffType rite,
+                                       Compare&& comp) {
+  DiffType pivot = 0;
   assert(pivot <= hi);
   assert(hi <= rite);
   // First loop: spend r[pivot .. hi]
@@ -369,10 +384,12 @@ Input assumptions:
 Output guarantee: Same as Hoare partition around r[pivot]. Returns the new
 position of the pivot.
 */
-template <class Iter, class Compare>
-size_t expandPartitionLeft(Iter r, size_t lo, size_t pivot, Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType expand_partition_left(Iter r, DiffType lo, DiffType pivot,
+                                      Compare&& comp) {
   assert(lo > 0 && lo <= pivot);
-  size_t left = 0;
+  DiffType left = 0;
   const auto oldPivot = pivot;
   for (; lo < pivot; ++left) {
     if (left == lo) goto done;
@@ -409,24 +426,25 @@ r[pivot]
 Output guarantee: Same as Hoare partition around r[pivot], returning the new
 position of the pivot.
 */
-template <class Iter, class Compare>
-size_t expandPartition(Iter r, size_t lo, size_t pivot, size_t hi,
-                       size_t length, Compare&& comp) {
+template <class Iter, class Compare,
+          class DiffType = typename std::iterator_traits<Iter>::difference_type>
+inline DiffType expand_partition(Iter r, DiffType lo, DiffType pivot,
+                                 DiffType hi, DiffType length, Compare&& comp) {
   assert(lo <= pivot && pivot < hi && hi <= length);
   --hi;
   --length;
-  size_t left = 0;
+  DiffType left = 0;
   for (;; ++left, --length) {
     for (;; ++left) {
       if (left == lo)
-        return pivot + expandPartitionRight(r + pivot, hi - pivot,
-                                            length - pivot, comp);
+        return pivot + expand_partition_right(r + pivot, hi - pivot,
+                                              length - pivot, comp);
       if (comp(r[pivot], r[left])) break;
     }
     for (;; --length) {
       if (length == hi)
         return left +
-               expandPartitionLeft(r + left, lo - left, pivot - left, comp);
+               expand_partition_left(r + left, lo - left, pivot - left, comp);
       if (!comp(r[pivot], r[length])) break;
     }
     std::swap(r[left], r[length]);

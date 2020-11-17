@@ -16,20 +16,21 @@ namespace miniselect {
 namespace median_of_medians_detail {
 
 template <class Iter, class Compare>
-static inline Iter partition(Iter r, Iter end, Compare&& comp) {
+inline Iter partition(Iter r, Iter end, Compare&& comp) {
   using CompType = typename median_common_detail::CompareRefType<Compare>::type;
-  const size_t len = end - r;
+  using DiffType = typename std::iterator_traits<Iter>::difference_type;
+  const DiffType len = end - r;
   if (len < 5) {
-    return median_common_detail::pivotPartition(r, len / 2, len, comp);
+    return median_common_detail::pivot_partition(r, len / 2, len, comp);
   }
-  size_t j = 0;
-  for (size_t i = 4; i < len; i += 5, ++j) {
+  DiffType j = 0;
+  for (DiffType i = 4; i < len; i += 5, ++j) {
     median_common_detail::partition5(r, i - 4, i - 3, i, i - 2, i - 1, comp);
     std::swap(r[i], r[j]);
   }
   median_common_detail::quickselect<Iter, CompType, &partition>(r, r + j / 2,
                                                                 r + j, comp);
-  return median_common_detail::pivotPartition(r, j / 2, len, comp);
+  return median_common_detail::pivot_partition(r, j / 2, len, comp);
 }
 
 }  // namespace median_of_medians_detail
@@ -47,7 +48,7 @@ inline void median_of_medians_select(Iter begin, Iter mid, Iter end,
 
 template <class Iter>
 inline void median_of_medians_select(Iter begin, Iter mid, Iter end) {
-  typedef typename std::iterator_traits<Iter>::value_type T;
+  using T = typename std::iterator_traits<Iter>::value_type;
   median_of_medians_select(begin, mid, end, std::less<T>());
 }
 
@@ -64,7 +65,7 @@ inline void median_of_medians_partial_sort(Iter begin, Iter mid, Iter end,
 
 template <class Iter>
 inline void median_of_medians_partial_sort(Iter begin, Iter mid, Iter end) {
-  typedef typename std::iterator_traits<Iter>::value_type T;
+  using T = typename std::iterator_traits<Iter>::value_type;
   median_of_medians_partial_sort(begin, mid, end, std::less<T>());
 }
 

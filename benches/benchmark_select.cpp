@@ -18,44 +18,31 @@
 namespace miniselect {
 namespace {
 
-static constexpr size_t kSize = 1000 * 1000 * 10;
+static constexpr size_t kSize = 65536;
 
 template <class DataGen, class Impl>
 static void BM_sel(benchmark::State& state) {
   auto vec = DataGen::Gen(kSize);
   const size_t arg = state.range(0);
   size_t cnt = 0;
-  size_t cmp = 0;
+  size_t access_count = 0;
+  size_t comparison_count = 0;
+  miniselect::datagens::CountingIterator begin_v(&vec, 0, &access_count);
+  miniselect::datagens::CountingIterator end_v(&vec, vec.size(), &access_count);
   for (auto _ : state) {
-    Impl::Select(vec.begin(), vec.begin() + arg, vec.end(),
-                 [&cmp](const auto& left, const auto& right) {
-                   cmp++;
+    Impl::Select(begin_v, begin_v + arg, end_v,
+                 [&comparison_count](const auto& left, const auto& right) {
+                   comparison_count++;
                    return left < right;
                  });
     ++cnt;
     benchmark::DoNotOptimize(vec[arg]);
   }
-  state.counters["Comparisons"] = 1.0 * cmp / cnt;
-}
-
-template <class DataGen, class Impl>
-static void BM_sel_accesses(benchmark::State& state) {
-  auto vec = DataGen::Gen(kSize);
-  const size_t arg = state.range(0);
-  size_t cnt = 0;
-  size_t cmp = 0;
-  miniselect::datagens::CountingIterator begin_v(&vec, 0, &cmp);
-  miniselect::datagens::CountingIterator end_v(&vec, vec.size(), &cmp);
-  for (auto _ : state) {
-    Impl::Select(begin_v, begin_v + arg, end_v);
-    ++cnt;
-    benchmark::DoNotOptimize(vec[arg]);
-  }
-  state.counters["Array Accesses"] = 1.0 * cmp / cnt;
+  state.counters["Array Accesses"] = 1.0 * access_count / cnt;
+  state.counters["Comparisons"] = 1.0 * comparison_count / cnt;
 }
 
 BENCH(BM_sel);
-BENCH(BM_sel_accesses);
 
 }  // namespace
 }  // namespace miniselect
