@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <functional>
 #include <iterator>
 #include <utility>
 
@@ -86,9 +87,9 @@ template <class Iter, class Compare,
 inline DiffType median_of_ninthers(Iter const r, const DiffType length,
                                    Compare&& comp) {
   assert(length >= 12);
-  const DiffType frac =
-      length <= 1024 ? length / 12
-                     : length <= 128 * 1024 ? length / 64 : length / 1024;
+  const DiffType frac = length <= 1024         ? length / 12
+                        : length <= 128 * 1024 ? length / 64
+                                               : length / 1024;
   DiffType pivot = frac / 2;
   const DiffType lo = length / 2 - pivot, hi = lo + frac;
   assert(lo >= frac * 4);

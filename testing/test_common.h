@@ -10,6 +10,7 @@
 #include <algorithm>
 
 #include "miniselect/floyd_rivest_select.h"
+#include "miniselect/heap_select.h"
 #include "miniselect/median_of_3_random.h"
 #include "miniselect/median_of_medians.h"
 #include "miniselect/median_of_ninthers.h"
@@ -172,9 +173,32 @@ struct MedianOf3Random {
   }
 };
 
+struct Heap {
+  template <class Iter, class Compare>
+  static void Sort(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    heap_partial_sort(begin, mid, end, std::move(comp));
+  }
+
+  template <class Iter>
+  static void Sort(Iter begin, Iter mid, Iter end) {
+    heap_partial_sort(begin, mid, end);
+  }
+
+  template <class Iter, class Compare>
+  static void Select(Iter begin, Iter mid, Iter end, Compare&& comp) {
+    heap_select(begin, mid, end, std::move(comp));
+  }
+
+  template <class Iter>
+  static void Select(Iter begin, Iter mid, Iter end) {
+    heap_select(begin, mid, end);
+  }
+};
+
+
 using All =
     ::testing::Types<STD, PDQ, PDQBranchless, FloydRivest, MedianOfNinthers,
-                     MedianOfMedians, MedianOf3Random>;
+                     MedianOfMedians, MedianOf3Random, Heap>;
 
 }  // namespace algorithms
 }  // namespace miniselect

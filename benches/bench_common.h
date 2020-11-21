@@ -276,6 +276,7 @@ class CountingIterator {
   BENCH_GENS(NAME, algorithms::MedianOf3Random);  \
   BENCH_GENS(NAME, algorithms::PDQ);              \
   BENCH_GENS(NAME, algorithms::PDQBranchless);    \
+  BENCH_GENS(NAME, algorithms::Heap);             \
   BENCH_GENS(NAME, algorithms::STD)
 
 }  // namespace datagens
