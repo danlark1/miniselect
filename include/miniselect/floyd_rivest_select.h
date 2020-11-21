@@ -43,12 +43,12 @@ inline void floyd_rivest_select_loop(Iter begin, DiffType left, DiffType right,
       if (i < n / 2) {
         sd *= -1.0;
       }
-      DiffType newLeft =
+      DiffType new_left =
           std::max(left, static_cast<DiffType>(k - i * s / n + sd));
-      DiffType newRight =
+      DiffType new_right =
           std::min(right, static_cast<DiffType>(k + (n - i) * s / n + sd));
-      floyd_rivest_select_loop<Iter, Compare, DiffType>(begin, newLeft,
-                                                        newRight, k, comp);
+      floyd_rivest_select_loop<Iter, Compare, DiffType>(begin, new_left,
+                                                        new_right, k, comp);
     }
     DiffType i = left;
     DiffType j = right;

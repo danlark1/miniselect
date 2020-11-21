@@ -34,7 +34,7 @@ template <class Iter, class Compare,
 inline DiffType median_of_minima(Iter const r, const DiffType n,
                                  const DiffType length, Compare&& comp) {
   assert(length >= 2);
-  assert(n * 4 <= length);
+  assert(n <= length / 6);
   assert(n > 0);
   const DiffType subset = n * 2, computeMinOver = (length - subset) / subset;
   assert(computeMinOver > 0);
@@ -59,7 +59,7 @@ template <class Iter, class Compare,
 inline DiffType median_of_maxima(Iter const r, const DiffType n,
                                  const DiffType length, Compare&& comp) {
   assert(length >= 2);
-  assert(n * 4 >= length * 3 && n < length);
+  assert(n < length && n / 5 >= length - n);
   const DiffType subset = (length - n) * 2, subsetStart = length - subset,
                  computeMaxOver = subsetStart / subset;
   assert(computeMaxOver > 0);
@@ -137,9 +137,9 @@ inline void adaptive_quickselect(Iter r, DiffType n, DiffType length,
     DiffType pivot;
     if (length <= 16)
       pivot = median_common_detail::pivot_partition(r, n, length, comp) - r;
-    else if (n * 6 <= length)
+    else if (n <= length / 6)
       pivot = median_of_minima(r, n, length, comp);
-    else if (n * 6 >= length * 5)
+    else if (n / 5 >= length - n)
       pivot = median_of_maxima(r, n, length, comp);
     else
       pivot = median_of_ninthers(r, length, comp);

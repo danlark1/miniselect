@@ -56,6 +56,7 @@ int main() {
 }
 // Compile it `clang++/g++ -I$DIRECTORY/miniselect/include/ example.cpp -std=c++11 -O3 -o example
 // Possible output: 0 1 4 3 2 5 8 7 6 9
+//                            ^ on the right place
 ```
 
 Examples can be found in [examples](./examples).
@@ -64,6 +65,8 @@ We support all compilers starting from GCC 7 and Clang 6. We are also planning
 to support Windows, for now it is best effort but no issues are known so far.
 
 More on which algorithms are available, see [documentation](#documentation).
+For overview of this work you can read the [article](https://danlark.org/2020/11/11/miniselect-practical-and-generic-selection-algorithms/)
+in the author's blog.
 
 Testing
 -------
@@ -258,7 +261,7 @@ The author have not found any decent library for selection algorithms and little
 research is published in open source, so that they decided to merge all that
 implementations and compare them with possible merging of different ideas
 into a decent one algorithm for most needs. For a big story of adventures see
-the author's blog post TODO.
+the author's [blog post](https://danlark.org/2020/11/11/miniselect-practical-and-generic-selection-algorithms/).
 
 License
 -------
