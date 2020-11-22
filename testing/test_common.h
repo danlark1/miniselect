@@ -195,10 +195,116 @@ struct Heap {
   }
 };
 
-
 using All =
     ::testing::Types<STD, PDQ, PDQBranchless, FloydRivest, MedianOfNinthers,
                      MedianOfMedians, MedianOf3Random, Heap>;
+
+template <class Integral>
+struct IntegralCharIterator {
+  using difference_type = Integral;
+  using value_type = char;
+  using pointer = char*;
+  using reference = char&;
+  using iterator_category = std::random_access_iterator_tag;
+
+  IntegralCharIterator() = default;
+  IntegralCharIterator(const IntegralCharIterator& other) : pos(other.pos) {}
+  IntegralCharIterator(IntegralCharIterator&& other) : pos(other.pos) {}
+  IntegralCharIterator& operator=(const IntegralCharIterator& other) {
+    pos = other.pos;
+    return *this;
+  }
+  IntegralCharIterator& operator=(IntegralCharIterator&& other) {
+    pos = other.pos;
+    return *this;
+  }
+  ~IntegralCharIterator() = default;
+  IntegralCharIterator(pointer p) : pos(p) {}
+
+  IntegralCharIterator& operator+=(difference_type other) {
+    pos += other;
+    return *this;
+  }
+
+  IntegralCharIterator& operator-=(difference_type other) {
+    pos -= other;
+    return *this;
+  }
+
+  value_type& operator[](difference_type other) {
+    if (static_cast<int64_t>(other) < 0) {
+      std::cout << "lol" << std::endl;
+    }
+    return pos[static_cast<size_t>(other)];
+  }
+
+  value_type& operator[](difference_type other) const {
+    return pos[static_cast<size_t>(other)];
+  }
+
+  IntegralCharIterator& operator++() {
+    ++pos;
+    return *this;
+  }
+
+  IntegralCharIterator operator++(int) { return IntegralCharIterator(pos++); }
+
+  IntegralCharIterator& operator--() {
+    --pos;
+    return *this;
+  }
+
+  IntegralCharIterator operator--(int) { return IntegralCharIterator(pos--); }
+
+  value_type& operator*() { return *pos; }
+
+  value_type& operator*() const { return *pos; }
+
+  difference_type operator-(const IntegralCharIterator& other) const {
+    return pos - other.pos;
+  }
+
+  IntegralCharIterator operator-(difference_type other) const {
+    return IntegralCharIterator(pos - other);
+  }
+
+  IntegralCharIterator operator+(difference_type other) const {
+    return IntegralCharIterator(pos + other);
+  }
+
+  bool operator==(const IntegralCharIterator& other) const {
+    return pos == other.pos;
+  }
+
+  bool operator!=(const IntegralCharIterator& other) const {
+    return pos != other.pos;
+  }
+
+  bool operator<(const IntegralCharIterator& other) const {
+    return pos < other.pos;
+  }
+
+  bool operator>(const IntegralCharIterator& other) const {
+    return pos > other.pos;
+  }
+
+  bool operator<=(const IntegralCharIterator& other) const {
+    return pos <= other.pos;
+  }
+
+  bool operator>=(const IntegralCharIterator& other) const {
+    return pos >= other.pos;
+  }
+
+  char* pos;
+};
+
+template <class Integral>
+inline IntegralCharIterator<Integral> operator+(
+    typename IntegralCharIterator<Integral>::difference_type diff,
+    const IntegralCharIterator<Integral> iter) {
+  return iter + diff;
+}
 
 }  // namespace algorithms
 }  // namespace miniselect

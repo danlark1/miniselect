@@ -25,8 +25,8 @@ template <class Compare, class Iter>
 inline void sift_down(Iter first, Compare comp,
                       typename std::iterator_traits<Iter>::difference_type len,
                       Iter start) {
-  using difference_type = typename std::iterator_traits<Iter>::difference_type ;
-  using value_type = typename std::iterator_traits<Iter>::value_type ;
+  using difference_type = typename std::iterator_traits<Iter>::difference_type;
+  using value_type = typename std::iterator_traits<Iter>::value_type;
   difference_type child = start - first;
 
   if (len < 2 || (len - 2) / 2 < child) return;

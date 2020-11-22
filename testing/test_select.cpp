@@ -69,6 +69,45 @@ class SelectTest : public ::testing::Test {
     }
   }
 
+  static void TestRandomAccessIterator(size_t N, size_t M) {
+    ASSERT_NE(N, 0);
+    ASSERT_GT(N, M);
+    SCOPED_TRACE(N);
+    SCOPED_TRACE(M);
+    std::vector<char> array(N);
+    for (size_t i = 0; i < N; ++i) {
+      array[i] = i;
+    }
+    std::mt19937_64 mersenne_engine;
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    algorithms::IntegralCharIterator<char> beg(array.data());
+    algorithms::IntegralCharIterator<char> mid(array.data() + M);
+    algorithms::IntegralCharIterator<char> end(array.data() + array.size());
+    Selector::Select(beg, mid, end, std::greater<char>());
+    EXPECT_EQ(array[M], N - M - 1);
+    for (size_t i = 0; i < M; ++i) {
+      EXPECT_GE(array[i], array[M]);
+    }
+    for (size_t i = M; i < N; ++i) {
+      EXPECT_LE(array[i], array[M]);
+    }
+  }
+
+  static void TestManyRandomAccessIterators(size_t N) {
+    TestRandomAccessIterator(N, 0);
+    TestRandomAccessIterator(N, 1);
+    TestRandomAccessIterator(N, 2);
+    TestRandomAccessIterator(N, N / 2 - 1);
+    TestRandomAccessIterator(N, N / 2);
+    TestRandomAccessIterator(N, N / 2 + 1);
+    TestRandomAccessIterator(N, N - 2);
+    TestRandomAccessIterator(N, N - 1);
+  }
+
+  static void TestRandomAccessIterators() {
+    TestManyRandomAccessIterators(127);
+  }
+
   static void TestSelects(size_t N) {
     TestSelects(N, 0);
     TestSelects(N, 1);
@@ -201,6 +240,10 @@ TYPED_TEST(SelectTest, TestComparators) {
 }
 
 TYPED_TEST(SelectTest, TestRepeats) { TestFixture::TestManyRepeats(); }
+
+TYPED_TEST(SelectTest, TestRandomAccessIterators) {
+  TestFixture::TestRandomAccessIterators();
+}
 
 TYPED_TEST(SelectTest, TestLast) {
   std::vector<int> array(100);

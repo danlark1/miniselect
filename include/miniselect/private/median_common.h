@@ -249,7 +249,7 @@ inline void quickselect(Iter r, Iter mid, Iter end, Compare&& comp) {
           auto pivot = r;
           for (mid = r + 1; mid < end; ++mid)
             if (comp(*pivot, *mid)) pivot = mid;
-          std::swap(*pivot, end[-1]);
+          std::swap(*pivot, *(end - 1));
           return;
         }
         auto pivot = partition(r, end, comp);

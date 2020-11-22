@@ -73,7 +73,8 @@ inline DiffType median_of_maxima(Iter const r, const DiffType n,
     if (comp(r[i], r[maxIndex])) std::swap(r[i], r[maxIndex]);
     assert(j != 0 || i + 1 == length);
   }
-  adaptive_quickselect(r + subsetStart, length - n, subset, comp);
+  adaptive_quickselect(r + subsetStart, static_cast<DiffType>(length - n),
+                       subset, comp);
   return median_common_detail::expand_partition(r, subsetStart, n, length,
                                                 length, comp);
 }
@@ -98,13 +99,15 @@ inline DiffType median_of_ninthers(Iter const r, const DiffType length,
   const DiffType gap = (length - 9 * frac) / 4;
   DiffType a = lo - 4 * frac - gap, b = hi + gap;
   for (DiffType i = lo; i < hi; ++i, a += 3, b += 3) {
-    median_common_detail::ninther(r, a, i - frac, b, a + 1, i, b + 1, a + 2,
-                                  i + frac, b + 2, comp);
+    median_common_detail::ninther(
+        r, a, static_cast<DiffType>(i - frac), b, static_cast<DiffType>(a + 1),
+        i, static_cast<DiffType>(b + 1), static_cast<DiffType>(a + 2),
+        static_cast<DiffType>(i + frac), static_cast<DiffType>(b + 2), comp);
   }
 
   adaptive_quickselect(r + lo, pivot, frac, comp);
-  return median_common_detail::expand_partition(r, lo, lo + pivot, hi, length,
-                                                comp);
+  return median_common_detail::expand_partition(
+      r, lo, static_cast<DiffType>(lo + pivot), hi, length, comp);
 }
 
 /**
@@ -183,9 +186,10 @@ inline void median_of_ninthers_partial_sort(Iter begin, Iter mid, Iter end,
                                             Compare comp) {
   if (begin == mid) return;
   using CompType = typename median_common_detail::CompareRefType<Compare>::type;
+  using DiffType = typename std::iterator_traits<Iter>::difference_type;
 
   median_of_ninthers_detail::adaptive_quickselect<Iter, CompType>(
-      begin, mid - begin - 1, end - begin, comp);
+      begin, static_cast<DiffType>(mid - begin - 1), end - begin, comp);
   std::sort<Iter, CompType>(begin, mid, comp);
 }
 

@@ -98,7 +98,8 @@ inline void floyd_rivest_partial_sort(Iter begin, Iter mid, Iter end,
   using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
   using DiffType = typename std::iterator_traits<Iter>::difference_type;
   floyd_rivest_detail::floyd_rivest_select_loop<Iter, CompType>(
-      begin, DiffType{0}, end - begin - 1, mid - begin - 1, comp);
+      begin, DiffType{0}, static_cast<DiffType>(end - begin - 1),
+      static_cast<DiffType>(mid - begin - 1), comp);
   // std::sort proved to be better than other sorts because of pivoting.
   std::sort<Iter, CompType>(begin, mid, comp);
 }
@@ -115,7 +116,8 @@ inline void floyd_rivest_select(Iter begin, Iter mid, Iter end, Compare comp) {
   using CompType = typename floyd_rivest_detail::CompareRefType<Compare>::type;
   using DiffType = typename std::iterator_traits<Iter>::difference_type;
   floyd_rivest_detail::floyd_rivest_select_loop<Iter, CompType>(
-      begin, DiffType{0}, end - begin - 1, mid - begin, comp);
+      begin, DiffType{0}, static_cast<DiffType>(end - begin - 1),
+      static_cast<DiffType>(mid - begin), comp);
 }
 
 template <class Iter>

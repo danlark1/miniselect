@@ -18,7 +18,7 @@ if (MINISELECT_TESTING)
     if (MINISELECT_SANITIZE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined -fno-sanitize-recover=all")
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wpedantic -Wno-gnu-zero-variadic-macro-arguments")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wpedantic -Werror -Wno-gnu-zero-variadic-macro-arguments")
 
     if (MINISELECT_BUILD_LIBCXX AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         message(STATUS "Using libcxx as a default standard C++ library")

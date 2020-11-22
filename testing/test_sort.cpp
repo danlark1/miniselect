@@ -59,6 +59,41 @@ class PartialSortTest : public ::testing::Test {
     }
   }
 
+  static void TestRandomAccessIterator(size_t N, size_t M) {
+    ASSERT_NE(N, 0);
+    ASSERT_GT(N, M);
+    SCOPED_TRACE(N);
+    SCOPED_TRACE(M);
+    std::vector<char> array(N);
+    for (size_t i = 0; i < N; ++i) {
+      array[i] = i;
+    }
+    std::mt19937_64 mersenne_engine;
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    algorithms::IntegralCharIterator<char> beg(array.data());
+    algorithms::IntegralCharIterator<char> mid(array.data() + M);
+    algorithms::IntegralCharIterator<char> end(array.data() + array.size());
+    Sorter::Sort(beg, mid, end, std::greater<char>());
+    for (size_t i = 0; i < M; ++i) {
+      EXPECT_EQ(array[i], N - i - 1);
+    }
+  }
+
+  static void TestManyRandomAccessIterators(size_t N) {
+    TestRandomAccessIterator(N, 0);
+    TestRandomAccessIterator(N, 1);
+    TestRandomAccessIterator(N, 2);
+    TestRandomAccessIterator(N, N / 2 - 1);
+    TestRandomAccessIterator(N, N / 2);
+    TestRandomAccessIterator(N, N / 2 + 1);
+    TestRandomAccessIterator(N, N - 2);
+    TestRandomAccessIterator(N, N - 1);
+  }
+
+  static void TestRandomAccessIterators() {
+    TestManyRandomAccessIterators(127);
+  }
+
   static void TestSorts(size_t N) {
     TestSorts(N, 0);
     TestSorts(N, 1);
@@ -128,6 +163,10 @@ TYPED_TEST(PartialSortTest, TestBasic) { TestFixture::TestManySorts(); }
 
 TYPED_TEST(PartialSortTest, TestComparators) {
   TestFixture::TestCustomComparators();
+}
+
+TYPED_TEST(PartialSortTest, TestRandomAccessIterators) {
+  TestFixture::TestRandomAccessIterators();
 }
 
 // The standard says that the order of other elements is unspecified even if

@@ -22,16 +22,22 @@ inline Iter partition(Iter r, Iter end, Compare&& comp) {
   using DiffType = typename std::iterator_traits<Iter>::difference_type;
   const DiffType len = end - r;
   if (len < 5) {
-    return median_common_detail::pivot_partition(r, len / 2, len, comp);
+    return median_common_detail::pivot_partition(
+        r, static_cast<DiffType>(len / 2), len, comp);
   }
   DiffType j = 0;
-  for (DiffType i = 4; i < len; i += 5, ++j) {
-    median_common_detail::partition5(r, i - 4, i - 3, i, i - 2, i - 1, comp);
+  DiffType end_range = len - 5;
+  for (DiffType i = 0; i <= end_range; i += 5, ++j) {
+    median_common_detail::partition5(
+        r, static_cast<DiffType>(i), static_cast<DiffType>(i + 1),
+        static_cast<DiffType>(i + 2), static_cast<DiffType>(i + 3),
+        static_cast<DiffType>(i + 4), comp);
     std::swap(r[i], r[j]);
   }
-  median_common_detail::quickselect<Iter, CompType, &partition>(r, r + j / 2,
-                                                                r + j, comp);
-  return median_common_detail::pivot_partition(r, j / 2, len, comp);
+  median_common_detail::quickselect<Iter, CompType, &partition>(
+      r, r + static_cast<DiffType>(j / 2), r + j, comp);
+  return median_common_detail::pivot_partition(r, static_cast<DiffType>(j / 2),
+                                               len, comp);
 }
 
 }  // namespace median_of_medians_detail
