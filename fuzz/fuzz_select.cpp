@@ -20,7 +20,6 @@ void ChooseImplementation(uint8_t byte, std::vector<U>& working,
       ...);
 }
 
-// Use the first element as a position into the data
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
                                       std::size_t size) {
   if (size <= 3) return 0;

@@ -293,7 +293,7 @@ struct IntegralCharIterator {
     return pos >= other.pos;
   }
 
-  char* pos;
+  char* pos = nullptr;
 };
 
 template <class Integral>
