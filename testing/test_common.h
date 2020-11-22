@@ -232,9 +232,6 @@ struct IntegralCharIterator {
   }
 
   value_type& operator[](difference_type other) {
-    if (static_cast<int64_t>(other) < 0) {
-      std::cout << "lol" << std::endl;
-    }
     return pos[static_cast<size_t>(other)];
   }
 
