@@ -9,8 +9,8 @@ and partial sorting algorithms with the ease of use, testing, advice on usage an
 benchmarking.
 
 Sorting is everywhere and there are many outstanding sorting algorithms that
-compete in speed, comparison count and cache friendliness. However selection
-algorithms are always a bit outside of the competition scope, however they are
+compete in speed, comparison count and cache friendliness. However, selection
+algorithms are always a bit outside of the competition scope, they are
 pretty important, for example, in databases ORDER BY LIMIT N is used extremely
 often which can benefit from more optimal selection and partial sorting
 algorithms. This library tries to solve this problem with Modern C++.
