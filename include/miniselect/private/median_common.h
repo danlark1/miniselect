@@ -270,8 +270,8 @@ template <class Iter, class Compare,
           class DiffType = typename std::iterator_traits<Iter>::difference_type>
 inline DiffType median_index(const Iter r, DiffType a, DiffType b, DiffType c,
                              Compare&& comp) {
-  if (r[a] > r[c]) std::swap(a, c);
-  if (r[b] > r[c]) return c;
+  if (comp(r[c], r[a])) std::swap(a, c);
+  if (comp(r[c], r[b])) return c;
   if (comp(r[b], r[a])) return a;
   return b;
 }
@@ -286,7 +286,6 @@ template <bool leanRight, class Iter, class Compare,
 inline DiffType median_index(Iter r, DiffType a, DiffType b, DiffType c,
                              DiffType d, Compare&& comp) {
   if (comp(r[d], r[c])) std::swap(c, d);
-  assert(r[c] <= r[d]);
   if (leanRight) {
     if (comp(r[c], r[a])) {
       assert(comp(r[c], r[a]) && !comp(r[d], r[c]));  // so r[c]) is out

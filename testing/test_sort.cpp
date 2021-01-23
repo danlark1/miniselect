@@ -10,6 +10,7 @@
 #include <memory>
 #include <random>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "test_common.h"
@@ -29,6 +30,13 @@ struct IndirectLess {
   IndirectLess &operator=(const IndirectLess &) = default;
   IndirectLess(IndirectLess &&) = default;
   IndirectLess &operator=(IndirectLess &&) = default;
+};
+
+struct CustomInt {
+  size_t x = 0;
+  bool operator<(const CustomInt& other) const {
+    return x < other.x;
+  }
 };
 
 template <typename Sorter>
@@ -122,13 +130,24 @@ class PartialSortTest : public ::testing::Test {
 
   static void TestCustomComparators() {
     std::vector<std::unique_ptr<int>> v(1000);
-    for (int i = 0; static_cast<std::size_t>(i) < v.size(); ++i) {
+    for (size_t i = 0; i < v.size(); ++i) {
       v[i] = std::make_unique<int>(i);
     }
     Sorter::Sort(v.begin(), v.begin() + v.size() / 2, v.end(), IndirectLess{});
-    for (int i = 0; static_cast<std::size_t>(i) < v.size() / 2; ++i) {
+    for (size_t i = 0; i < v.size() / 2; ++i) {
       ASSERT_NE(v[i], nullptr);
       EXPECT_EQ(*v[i], i);
+    }
+  }
+
+  static void TestOnlyOperatorLess() {
+    std::vector<CustomInt> v(1000);
+    for (size_t i = 0; i < v.size(); ++i) {
+      v[i].x = v.size() - i - 1;
+    }
+    Sorter::Sort(v.begin(), v.begin() + v.size() / 2, v.end());
+    for (size_t i = 0; i < v.size() / 2; ++i) {
+      EXPECT_EQ(v[i].x, i);
     }
   }
 };
@@ -167,6 +186,10 @@ TYPED_TEST(PartialSortTest, TestComparators) {
 
 TYPED_TEST(PartialSortTest, TestRandomAccessIterators) {
   TestFixture::TestRandomAccessIterators();
+}
+
+TYPED_TEST(PartialSortTest, TestOnlyOperatorLess) {
+  TestFixture::TestOnlyOperatorLess();
 }
 
 // The standard says that the order of other elements is unspecified even if

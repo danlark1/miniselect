@@ -31,6 +31,13 @@ struct IndirectLess {
   IndirectLess &operator=(IndirectLess &&) = default;
 };
 
+struct CustomInt {
+  size_t x = 0;
+  bool operator<(const CustomInt& other) const {
+    return x < other.x;
+  }
+};
+
 template <typename Selector>
 class SelectTest : public ::testing::Test {
  public:
@@ -135,7 +142,7 @@ class SelectTest : public ::testing::Test {
 
   static void TestCustomComparators() {
     std::vector<std::unique_ptr<int>> v(1000);
-    for (int i = 0; static_cast<std::size_t>(i) < v.size(); ++i) {
+    for (size_t i = 0; i < v.size(); ++i) {
       v[i] = std::make_unique<int>(i);
     }
     Selector::Select(v.begin(), v.begin() + v.size() / 2, v.end(),
@@ -148,6 +155,21 @@ class SelectTest : public ::testing::Test {
     for (size_t i = v.size() / 2; i < v.size(); ++i) {
       ASSERT_NE(v[i], nullptr);
       EXPECT_GE(*v[i], v.size() / 2);
+    }
+  }
+
+  static void TestOnlyOperatorLess() {
+    std::vector<CustomInt> v(1000);
+    for (size_t i = 0; i < v.size(); ++i) {
+      v[i].x = v.size() - i - 1;
+    }
+    Selector::Select(v.begin(), v.begin() + v.size() / 2, v.end());
+    EXPECT_EQ(v[v.size() / 2].x, v.size() / 2);
+    for (size_t i = 0; i < v.size() / 2; ++i) {
+      EXPECT_LE(v[i].x, v.size() / 2);
+    }
+    for (size_t i = v.size() / 2; i < v.size(); ++i) {
+      EXPECT_GE(v[i].x, v.size() / 2);
     }
   }
 
@@ -237,6 +259,10 @@ TYPED_TEST(SelectTest, TestBasic) { TestFixture::TestManySelects(); }
 
 TYPED_TEST(SelectTest, TestComparators) {
   TestFixture::TestCustomComparators();
+}
+
+TYPED_TEST(SelectTest, TestOnlyOperatorLess) {
+  TestFixture::TestOnlyOperatorLess();
 }
 
 TYPED_TEST(SelectTest, TestRepeats) { TestFixture::TestManyRepeats(); }
