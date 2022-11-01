@@ -245,18 +245,18 @@ to merge them.
 Motivation
 ----------
 
-Firstly the author was interested if any research had been done for small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k)
+The author was surveying research on small
+![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k)
 in selection algorithms and was struggling to find working implementations to
 compare different approaches from standard library and quickselect algorithms.
-After that it turned out that the problem is much more interesting than it looks
-like and after reading The Art of Computer Programming from Donald Knuth about
-minimum comparison sorting and selection algorithms the author decided to look
-through all non-popular algorithms and try them out.
+It turned out that the problem is much more interesting than it looks, and after
+consulting The Art of Computer Programming from Donald Knuth about
+minimum comparison sorting and selection algorithms, the author decided to look
+through unpopular algorithms and try them out. Not finding any satisfactory
+library for selection algorithms nor research corresponding to the open source codes,
+the author set out to write one generic library.
 
-The author have not found any decent library for selection algorithms and little
-research is published in open source, so that they decided to merge all that
-implementations and compare them with possible merging of different ideas
-into a decent one algorithm for most needs. For a big story of adventures see
+For a big story of adventures see
 the author's [blog post](https://danlark.org/2020/11/11/miniselect-practical-and-generic-selection-algorithms/).
 
 License
