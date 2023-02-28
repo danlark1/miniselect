@@ -227,7 +227,8 @@ Other benchmarks can be found [here](https://drive.google.com/drive/folders/1DHE
 Real-world usage
 ----------------
 
-- [Yandex ClickHouse](https://github.com/yandex/ClickHouse)
+- [ClickHouse Inc.](https://github.com/ClickHouse/ClickHouse): Fast Open-Source OLAP DBMS
+- [YDB](https://github.com/ydb-platform/ydb/commit/698b400d09b3c1c7aff6ebf986eb3dc3ced74a08): Open-Source Distributed SQL Database
 
 If you are planning to use miniselect in your product, please work from one of
 our releases and if you wish, you can write the acknowledgment in this section
