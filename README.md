@@ -91,22 +91,22 @@ can also use `ctest`.
 Documentation
 -------------
 
-There are several selection algorithms available, further ![\large n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n) is the number
-of elements in the array, ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) is the selection element that is needed to be found (all algorithms are deterministic and not stable unless otherwise is specified):
+There are several selection algorithms available, further $n$ is the number
+of elements in the array, $k$ is the selection element that is needed to be found (all algorithms are deterministic and not stable unless otherwise is specified):
 
 
 | Name                      | Average                                                                                                   | Best Case                                                                                                 | Worst Case                                                                                                                | Comparisons                                                                                                                                                                                                                                                                                                                               | Memory                                                                                                                            |
 |-------------------------  |---------------------------------------------------------------------------------------------------------  |---------------------------------------------------------------------------------------------------------  |-----------------------------------------------------------------------------------------------------------------------    |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------   |---------------------------------------------------------------------------------------------------------------------------------  |
-| [pdqselect](./include/miniselect/pdqselect.h)                 | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+n%29)     | At least ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n). Random data ![\large 2.5n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2.5n)                                                                                                          | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)                           |
-| [Floyd-Rivest](./include/miniselect/floyd_rivest_select.h)               | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n^2 )](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5E2+%29)           | Avg: ![\large n + \min(k, n - k) + O(\sqrt{n \log n})](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n+%2B+%5Cmin%28k%2C+n+-+k%29+%2B+O%28%5Csqrt%7Bn+%5Clog+n%7D%29)                                                                                                                              | ![\large O(\log \log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+%5Clog+n%29)  |
-| [Median Of Medians](./include/miniselect/median_of_medians.h)           | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)                   | Between ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n) and ![\large 22n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+22n). Random data  ![\large 2.5n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2.5n)    | ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29)               |
-| [Median Of Ninthers](./include/miniselect/median_of_ninthers.h)          | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)                   | Between ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n) and ![\large 21n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+21n). Random data ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n)       | ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29)              |
-| [Median Of 3 Random](./include/miniselect/median_of_3_random.h)          | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n^2 )](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5E2+%29)           | At least ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n). Random data ![\large 3n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+3n)       | ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29)              |
-| [HeapSelect](./include/miniselect/heap_select.h)          | ![\large O(n\log k)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+k%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n\log k)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+k%29)           | ![\large n\log k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n%5Clog+k) on average, for some data patterns might be better       | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)              |
-| [libstdc++ (introselect)](https://github.com/gcc-mirror/gcc/blob/e0af865ab9d9d5b6b3ac7fdde26cf9bbf635b6b4/libstdc%2B%2B-v3/include/bits/stl_algo.h#L4748)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5Clog+n%29)     | At least ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n). Random data ![\large 3n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+3n)                                                                                                              | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)                             |
-| [libc++ (median of 3)](https://github.com/llvm/llvm-project/blob/3ed89b51da38f081fedb57727076262abb81d149/libcxx/include/algorithm#L5159)     | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%29)   | ![\large O(n^2 )](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28n%5E2+%29)           | At least ![\large 2n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+2n). Random data ![\large 3n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+3n)                                                                                                              | ![\large O(1)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%281%29)                           |
+| [pdqselect](./include/miniselect/pdqselect.h)                 | $O(n)$   | $O(n)$   | $`O(n\log n)`$     | At least $2n$. Random data $2.5n$                                                                                                          | $O(1)$                           |
+| [Floyd-Rivest](./include/miniselect/floyd_rivest_select.h)               | $O(n)$   | $O(n)$   | $O(n^2)$           | Avg: $n + \min(k, n - k) + O(\sqrt{n \log n})]$                                                                                                                              | $`O(\log\log n)`$  |
+| [Median Of Medians](./include/miniselect/median_of_medians.h)           | $O(n)$   | $O(n)$   | $O(n)$                   | Between $2n$ and $22n$. Random data  $2.5n$    | $O(\log n)$               |
+| [Median Of Ninthers](./include/miniselect/median_of_ninthers.h)          | $O(n)$   | $O(n)$   | $O(n)$                   | Between $2n$ and $21n$. Random data $2n$       | $O(\log n)$              |
+| [Median Of 3 Random](./include/miniselect/median_of_3_random.h)          | $O(n)$   | $O(n)$   | $O(n^2)$           | At least $2n$. Random data $3n$       | $O(\log n)$              |
+| [HeapSelect](./include/miniselect/heap_select.h)          | $`O(n\log k)`$   | $O(n)$   | $`O(n\log k)`$           | $n\log k$ on average, for some data patterns might be better       | $O(1)$              |
+| [libstdc++ (introselect)](https://github.com/gcc-mirror/gcc/blob/e0af865ab9d9d5b6b3ac7fdde26cf9bbf635b6b4/libstdc%2B%2B-v3/include/bits/stl_algo.h#L4748)   | $O(n)$   | $O(n)$   | $`O(n\log n)`$     | At least $2n$. Random data $3n$                                                                                                              | $O(1)$                             |
+| [libc++ (median of 3)](https://github.com/llvm/llvm-project/blob/3ed89b51da38f081fedb57727076262abb81d149/libcxx/include/algorithm#L5159)     | $O(n)$   | $O(n)$   | $O(n^2)$           | At least $2n$. Random data $3n$)                                                                                                              | $O(1)$                           |
 
-For sorting the situation is similar except every line adds ![\large O(k\log k)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28k%5Clog+k%29) comparisons and pdqselect is using ![\large O(\log n)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+O%28%5Clog+n%29) memory.
+For sorting the situation is similar except every line adds $O(k\log k)$ comparisons and pdqselect is using $O(\log n)$ memory.
 
 ## API
 
@@ -128,7 +128,7 @@ because of some floating point math in several algorithms.
   - This algorithm is based on [`pdqsort`](https://github.com/orlp/pdqsort) which is acknowledged as one of the fastest generic sort algorithms.
   - **Location:** [`miniselect/pdqselect.h`](./include/miniselect/pdqselect.h).
   - **Functions:** `pdqselect`, `pdqselect_branchless`, `pdqpartial_sort`, `pdqpartial_sort_branchless`. Branchless version uses branchless partition algorithm provided by [`pdqsort`](https://github.com/orlp/pdqsort). Use it if your comparison function is branchless, it might give performance for very big ranges.
-  - **Performance advice:** Use it when you need to sort a big chunk so that ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) is close to ![\large n](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+n).
+  - **Performance advice:** Use it when you need to sort a big chunk so that $k$ is close to $n$.
 
 <p align="center"><img src="https://media.giphy.com/media/TXIm9rTmbmox5ceSyP/giphy.gif" /></p>
 
@@ -137,9 +137,9 @@ because of some floating point math in several algorithms.
   - **Location:** [`miniselect/floyd_rivest_select.h`](./include/miniselect/floyd_rivest_select.h).
   - **Functions:** `floyd_rivest_select`, `floyd_rivest_partial_sort`.
   - **Performance advice:** Given that this algorithm performs as one of the best on average case in terms of comparisons and speed, we highly advise to
-  at least try this in your project. Especially it is good for small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) or types that are expensive to compare (for example, strings). But even for median the benchmarks show it outperforms others. It is not easy for this algorithm to build a reasonable worst case but one of examples when this algorithm does not perform well is when there are lots of similar values of linear size (random01 dataset showed some moderate penalties).
+  at least try this in your project. Especially it is good for small $k$ or types that are expensive to compare (for example, strings). But even for median the benchmarks show it outperforms others. It is not easy for this algorithm to build a reasonable worst case but one of examples when this algorithm does not perform well is when there are lots of similar values of linear size (random01 dataset showed some moderate penalties).
 
-We present here two gifs, for median and for ![\large k = n / 10](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k+%3D+n+%2F+10) order statistic.
+We present here two gifs, for median and for $k = n/10$ order statistic.
 
 <p float="left">
   <img src="https://media.giphy.com/media/a5ORb22iMCE0a6D2cf/giphy.gif" width="48%" />
@@ -187,10 +187,10 @@ We present here two gifs, for median and for ![\large k = n / 10](https://render
 <p align="center"><img src="https://media.giphy.com/media/03eJ0S7H79Jdtrv49F/giphy.gif" /></p>
 
 - `std::partial_sort` or `HeapSelect`
-  - This algorithm has [heap-based solutions](https://en.wikipedia.org/wiki/Partial_sorting) both in libc++ and libstdc++, from the first ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) elements the max heap is built, then one by one the elements are trying to be pushed to that heap with HeapSort in the end.
+  - This algorithm has [heap-based solutions](https://en.wikipedia.org/wiki/Partial_sorting) both in libc++ and libstdc++, from the first $k$ elements the max heap is built, then one by one the elements are trying to be pushed to that heap with HeapSort in the end.
   - **Location:** `<algorithm>`, [`miniselect/heap_select.h`](./include/miniselect/heap_select.h).
   - **Functions:** `std::partial_sort`, `heap_select`, `heap_partial_sort`.
-  - **Performance advice:** This algorithm is very good for random data and small ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) and might outperform all selection+sort algorithms. However, for descending data it starts to significantly degrade and is not recommended for use if you have such patterns in real data.
+  - **Performance advice:** This algorithm is very good for random data and small $k$ and might outperform all selection+sort algorithms. However, for descending data it starts to significantly degrade and is not recommended for use if you have such patterns in real data.
 
 <p align="center"><img src="https://media.giphy.com/media/MAw3Tk2TDxrnv6vLlu/giphy.gif" /></p>
 
@@ -203,7 +203,7 @@ Performance results
 -------------------
 
 We use 10 datasets and 8 algorithms with 10000000 elements to find median and
-other ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k) on `Intel(R) Core(TM) i5-4200H CPU @ 2.80GHz` for `std::vector<int>`,
+other $k$ on `Intel(R) Core(TM) i5-4200H CPU @ 2.80GHz` for `std::vector<int>`,
 for median the benchmarks are the following:
 
 ![median](benches/plots/result_10000000_5000000.png)
@@ -212,7 +212,7 @@ for median the benchmarks are the following:
 
 ![median](benches/plots/result_accesses_10000000_5000000.png)
 
-For smaller ![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k),
+For smaller $k$,
 for example, 1000, the results are the following
 
 ![k equals 1000](benches/plots/result_10000000_1000.png)
@@ -248,7 +248,7 @@ Motivation
 ----------
 
 The author was surveying research on small
-![\large k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Clarge+k)
+$k$
 in selection algorithms and was struggling to find working implementations to
 compare different approaches from standard library and quickselect algorithms.
 It turned out that the problem is much more interesting than it looks, and after
