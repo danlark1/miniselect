@@ -45,6 +45,8 @@
 #define PDQSORT_PREFER_MOVE(x) (x)
 #endif
 
+#include "private/median_common.h"
+
 namespace miniselect {
 namespace pdqsort_detail {
 
