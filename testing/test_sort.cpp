@@ -26,6 +26,7 @@ struct IndirectLess {
   bool operator()(const P &x, const P &y) const {
     return *x < *y;
   }
+  IndirectLess() = default;
   IndirectLess(const IndirectLess &) = default;
   IndirectLess &operator=(const IndirectLess &) = default;
   IndirectLess(IndirectLess &&) = default;
@@ -133,7 +134,7 @@ class PartialSortTest : public ::testing::Test {
     for (size_t i = 0; i < v.size(); ++i) {
       v[i] = std::make_unique<int>(i);
     }
-    Sorter::Sort(v.begin(), v.begin() + v.size() / 2, v.end(), IndirectLess{});
+    Sorter::Sort(v.begin(), v.begin() + v.size() / 2, v.end(), IndirectLess());
     for (size_t i = 0; i < v.size() / 2; ++i) {
       ASSERT_NE(v[i], nullptr);
       EXPECT_EQ(*v[i], i);

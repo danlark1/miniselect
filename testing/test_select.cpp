@@ -25,6 +25,7 @@ struct IndirectLess {
   bool operator()(const P &x, const P &y) const {
     return *x < *y;
   }
+  IndirectLess() = default;
   IndirectLess(const IndirectLess &) = default;
   IndirectLess &operator=(const IndirectLess &) = default;
   IndirectLess(IndirectLess &&) = default;
@@ -140,13 +141,68 @@ class SelectTest : public ::testing::Test {
     TestSelects(1009 * 109);
   }
 
+  static void TestRepeat(size_t N, size_t M) {
+    ASSERT_NE(N, 0);
+    ASSERT_GT(N, M);
+    SCOPED_TRACE(N);
+    SCOPED_TRACE(M);
+    std::mt19937_64 mersenne_engine(10);
+    std::vector<uint8_t> array(N);
+    for (size_t i = 0; i < M; ++i) {
+      array[i] = 0;
+    }
+    for (size_t i = M; i < N; ++i) {
+      array[i] = 1;
+    }
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    Selector::Select(array.begin(), array.begin() + M, array.end());
+    EXPECT_EQ(array[M], 1);
+    for (size_t i = 0; i < M; ++i) {
+      EXPECT_EQ(array[i], 0);
+    }
+    for (size_t i = M; i < N; ++i) {
+      EXPECT_EQ(array[i], 1);
+    }
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    Selector::Select(array.begin(), array.begin() + M / 2, array.end());
+    EXPECT_EQ(array[M / 2], 0);
+    for (size_t i = 0; i < M / 2; ++i) {
+      EXPECT_EQ(array[i], 0);
+    }
+    std::shuffle(array.begin(), array.end(), mersenne_engine);
+    Selector::Select(array.begin(), array.begin() + M - 1, array.end());
+    EXPECT_EQ(array[M - 1], 0);
+    for (size_t i = 0; i < M - 1; ++i) {
+      EXPECT_EQ(array[i], 0);
+    }
+  }
+
+  static void TestRepeats(size_t N) {
+    TestRepeat(N, 1);
+    TestRepeat(N, 2);
+    TestRepeat(N, 3);
+    TestRepeat(N, N / 2 - 1);
+    TestRepeat(N, N / 2);
+    TestRepeat(N, N / 2 + 1);
+    TestRepeat(N, N - 2);
+    TestRepeat(N, N - 1);
+  }
+
+  static void TestManyRepeats() {
+    TestRepeats(10);
+    TestRepeats(100);
+    TestRepeats(257);
+    TestRepeats(1000);
+    TestRepeats(100000);
+  }
+
   static void TestCustomComparators() {
     std::vector<std::unique_ptr<int>> v(1000);
     for (size_t i = 0; i < v.size(); ++i) {
       v[i] = std::make_unique<int>(i);
     }
     Selector::Select(v.begin(), v.begin() + v.size() / 2, v.end(),
-                     IndirectLess{});
+                     IndirectLess());
     EXPECT_EQ(*v[v.size() / 2], v.size() / 2);
     for (size_t i = 0; i < v.size() / 2; ++i) {
       ASSERT_NE(v[i], nullptr);
@@ -210,6 +266,8 @@ TYPED_TEST(SelectTest, TestOnlyOperatorLess) {
   TestFixture::TestOnlyOperatorLess();
 }
 
+TYPED_TEST(SelectTest, TestRepeats) { TestFixture::TestManyRepeats(); }
+
 TYPED_TEST(SelectTest, TestRandomAccessIterators) {
   TestFixture::TestRandomAccessIterators();
 }
@@ -240,8 +298,8 @@ TYPED_TEST(SelectTest, PdqBug) {
     9993, 9997, 4986, 4988, 4990, 4992, 4994, 4996, 0, 0, 126, 4985, 128,
     4987, 130, 4989, 132, 4991, 9994, 9996, 136, 10000, 138, 4997, 4999, 141,
     4982, 4993, 4984, 4995, 9995, 9998};
-   TypeParam::Select(v.begin(), v.begin() + 7, v.end());
-   EXPECT_EQ(v[7], 0);
+  TypeParam::Select(v.begin(), v.begin() + 7, v.end());
+  EXPECT_EQ(v[7], 0);
 }
 
 }  // namespace

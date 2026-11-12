@@ -878,7 +878,7 @@ inline void pdqpartial_sort(Iter begin, Iter mid, Iter end, Compare comp) {
       begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 #else
   pdqsort_detail::pdqpartial_sort_loop<Iter, Compare, false>(
-    begin, mid, end, comp, pdqsort_detail::log2(end - begin));
+      begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 #endif
 }
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 4.0)
 project(miniselect)
 
 option(MINISELECT_TESTING "Building the tests." OFF)
@@ -10,7 +10,7 @@ include_directories(include)
 
 if (MINISELECT_TESTING)
     enable_testing()
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
     if (NOT CMAKE_BUILD_TYPE)
         message(STATUS "No build type selected, default to Release")
         set(CMAKE_BUILD_TYPE "Release")
