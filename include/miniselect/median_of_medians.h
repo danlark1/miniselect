@@ -32,7 +32,7 @@ inline Iter partition(Iter r, Iter end, Compare&& comp) {
         r, static_cast<DiffType>(i), static_cast<DiffType>(i + 1),
         static_cast<DiffType>(i + 2), static_cast<DiffType>(i + 3),
         static_cast<DiffType>(i + 4), comp);
-    std::swap(r[i], r[j]);
+    std::iter_swap(r + (i + 2), r + j);
   }
   median_common_detail::quickselect<Iter, CompType, &partition>(
       r, r + static_cast<DiffType>(j / 2), r + j, comp);

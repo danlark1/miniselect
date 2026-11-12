@@ -640,6 +640,7 @@ inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare& comp,
     // since it's sorted (all equal).
     if (!leftmost && !comp(*(begin - 1), *begin)) {
       begin = partition_left(begin, end, comp) + 1;
+      if (begin >= mid) return;
       continue;
     }
 
@@ -704,7 +705,12 @@ inline void pdqpartial_sort_loop(Iter begin, Iter mid, Iter end, Compare& comp,
       pdqsort_loop<Iter, Compare, Branchless>(begin, pivot_pos, comp,
                                               bad_allowed, leftmost);
       begin = pivot_pos + 1;
+      if (begin >= mid) return;
       leftmost = false;
+    } else if (pivot_pos == mid) {
+      pdqsort_loop<Iter, Compare, Branchless>(begin, pivot_pos, comp,
+                                              bad_allowed, leftmost);
+      return;
     } else {
       end = pivot_pos;
     }
@@ -748,6 +754,7 @@ inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare& comp,
     // since it's sorted (all equal).
     if (!leftmost && !comp(*(begin - 1), *begin)) {
       begin = partition_left(begin, end, comp) + 1;
+      if (begin > mid) return;
       continue;
     }
 
@@ -756,6 +763,7 @@ inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare& comp,
         Branchless ? partition_right_branchless(begin, end, comp)
                    : partition_right(begin, end, comp);
     Iter pivot_pos = part_result.first;
+    if (pivot_pos == mid) return;
     bool already_partitioned = part_result.second;
 
     // Check for a highly unbalanced partition.
@@ -769,7 +777,10 @@ inline void pdqselect_loop(Iter begin, Iter mid, Iter end, Compare& comp,
       // If we had too many bad partitions, switch to heapsort to guarantee O(n
       // log n).
       if (--bad_allowed == 0) {
-        std::nth_element(begin, mid, end, comp);
+        if (pivot_pos < mid)
+          std::nth_element(pivot_pos + 1, mid, end, comp);
+        else
+          std::nth_element(begin, mid, pivot_pos, comp);
         return;
       }
 
@@ -855,7 +866,7 @@ inline void pdqsort_branchless(Iter begin, Iter end) {
 
 template <class Iter, class Compare>
 inline void pdqpartial_sort(Iter begin, Iter mid, Iter end, Compare comp) {
-  if (begin == end) return;
+  if (begin == mid) return;
 
 #if __cplusplus >= 201103L
   pdqsort_detail::pdqpartial_sort_loop<
@@ -867,7 +878,7 @@ inline void pdqpartial_sort(Iter begin, Iter mid, Iter end, Compare comp) {
       begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 #else
   pdqsort_detail::pdqpartial_sort_loop<Iter, Compare, false>(
-      begin, end, comp, pdqsort_detail::log2(end - begin));
+    begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 #endif
 }
 
@@ -880,7 +891,7 @@ inline void pdqpartial_sort(Iter begin, Iter mid, Iter end) {
 template <class Iter, class Compare>
 inline void pdqpartial_sort_branchless(Iter begin, Iter mid, Iter end,
                                        Compare comp) {
-  if (begin == end) return;
+  if (begin == mid) return;
   pdqsort_detail::pdqpartial_sort_loop<Iter, Compare, true>(
       begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 }
@@ -894,7 +905,7 @@ inline void pdqpartial_sort_branchless(Iter begin, Iter mid, Iter end) {
 template <class Iter, class Compare>
 inline void pdqselect(Iter begin, Iter mid, Iter end, Compare comp) {
   if (mid == end) return;
-  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
+  using CompType = typename pdqsort_detail::CompareRefType<Compare>::type;
 
 #if __cplusplus >= 201103L
   pdqsort_detail::pdqselect_loop<
@@ -906,7 +917,7 @@ inline void pdqselect(Iter begin, Iter mid, Iter end, Compare comp) {
       begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 #else
   pdqsort_detail::pdqselect_loop<Iter, Compare, false>(
-      begin, end, comp, pdqsort_detail::log2(end - begin));
+      begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 #endif
 }
 
@@ -919,7 +930,7 @@ inline void pdqselect(Iter begin, Iter mid, Iter end) {
 template <class Iter, class Compare>
 inline void pdqselect_branchless(Iter begin, Iter mid, Iter end, Compare comp) {
   if (mid == end) return;
-  using CompType = typename median_common_detail::CompareRefType<Compare>::type;
+  using CompType = typename pdqsort_detail::CompareRefType<Compare>::type;
   pdqsort_detail::pdqselect_loop<Iter, CompType, true>(
       begin, mid, end, comp, pdqsort_detail::log2(end - begin));
 }
